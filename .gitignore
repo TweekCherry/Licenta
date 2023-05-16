@@ -1,0 +1,14 @@
+.project
+.settings/
+management-backend/target/
+management-backend/.classpath
+management-frontend/target/
+web-backend/.classpath
+web-backend/target/
+management-frontend/.classpath
+web-frontend/target/
+commons/target/
+consul/standalone/checks/67e20734152b14fb8681fa6440f47ffe546eda7c2573ec8a7659a522661e16ae
+consul/standalone/
+commons/.classpath
+web-frontend/.classpath

@@ -1,0 +1,72 @@
+spring:
+  application:
+    name: web-frontend
+    admin:
+      enabled: true
+  cloud:
+    consul:
+      config:
+        enabled: false
+      discovery:
+        ip-address: 127.0.0.1
+        catalog-services-watch-delay: 15000
+        deregister: false
+        fail-fast: false
+        prefer-ip-address: true
+        heartbeat:
+          enabled: true
+          reregister-service-on-failure: true
+          ttl: 60
+        enable-tag-override: true
+        scheme: https
+        tags:
+        - "traefik.enable=true"
+        
+        - "traefik.http.middlewares.httpsredirect.redirectScheme.scheme=https"
+        - "traefik.http.middlewares.httpsredirect.redirectScheme.permanent=true"
+        
+        - "traefik.http.services.${spring.application.name}.loadbalancer.sticky=true"
+        - "traefik.http.services.${spring.application.name}.loadbalancer.sticky.cookie.httponly=true"
+        - "traefik.http.services.${spring.application.name}.loadbalancer.sticky.cookie.secure=true"
+        - "traefik.http.services.${spring.application.name}.loadbalancer.sticky.cookie.name=serverUUID"
+        
+        - "traefik.http.routers.${spring.application.name}_tls.entryPoints=web-secure"
+        - "traefik.http.routers.${spring.application.name}_tls.tls=true"
+        - "traefik.http.routers.${spring.application.name}_tls.tls.certResolver=acmetsl"
+        - "traefik.http.routers.${spring.application.name}_tls.service=${spring.application.name}"
+        
+        - "traefik.http.routers.${spring.application.name}.entryPoints=web"
+        - "traefik.http.routers.${spring.application.name}.middlewares=httpsredirect"
+        - "traefik.http.routers.${spring.application.name}.service=${spring.application.name}"
+        
+  web:
+    resources:
+      cache:
+        cachecontrol:
+          no-cache: true
+      static-locations:
+      - classpath:/static/assets/
+  freemarker:
+    enabled: true
+    suffix: .html
+    template-loader-path:
+    - classpath:/static/
+logging:
+  config: classpath:log4j2.xml
+server:
+  port: 9090
+  address: 127.0.0.1
+  compression:
+    enabled: true
+    mime-types:
+    - application/json
+    - application/xml
+    - application/javascript
+    - text/html
+    - text/xml
+    - text/plain
+    - text/css
+    - text/javascript
+    - application/x-font-ttf
+    - application/font-woff
+    - application/font-woff2

@@ -1,0 +1,1 @@
+./consul agent -data-dir=standalone -config-file=standalone.json

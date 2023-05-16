@@ -1,0 +1,24 @@
+How do you get Chrome to accept a self-signed certificate?
+The following procedure, based on an answer provided by user: kgrote, works for Chrome 68 on Windows 10:
+
+Navigate to the site with the cert you want to trust, and click through the usual warnings for untrusted certificates.
+
+In the address bar, right click on the red warning triangle and "Not secure" message and, from the resulting menu, select "Certificate" to show the certificate.
+
+In the window that pops up, select the "Details" tab (immediately to the right of "General"), and click on the "Copy to File..." at the bottom right of the tab.
+
+This launches the Certificate Export Wizard; click "Next" at the bottom, which takes you to a radio-button dialogue for selecting the format. Leave the default "DER encoded binary X.509 (.CER)" and click next again.
+
+Use the "Browse..." button to select a filename Documents (or wherever you'd like to leave the exported cert), and remember the name and path. Click "Next" to export the cert and then "Finish".
+
+You should get another pop-up window telling you the export was successful. Click "OK" to dismiss it, and again in the original "Certificate" pop-up window to dismiss it too.
+
+Next open the Chrome settings page, scroll to the bottom, and expand the "Advanced" section; in the "Privacy and security" panel, click on the "Manage certificates" area.
+
+In the pop-up "Certificates" window, select the "Trusted Root Certification Authorities" tab, and click on the "Import..." button; this will launch the Certificate Import Wizard.
+
+Click "Next" and, on the next page, select "Browse..." and use the explorer window to locate the certificate you exported at step 5 above.
+
+Click "Next" again, then "Finish", and, in the "Security Warning" pop-up, click on "Yes"; you should see yet another pop-up letting you know that the import was successful.
+
+Restart Chrome, and navigate to the webpage again; this time you should see the closed padlock and "Secure" annotation to the left of the URL.

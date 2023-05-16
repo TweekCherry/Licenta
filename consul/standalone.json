@@ -1,0 +1,19 @@
+{
+    "ui_config": {
+		"enabled": true
+	},
+    "server": true,
+    "bootstrap_expect": 1,
+    "datacenter": "europe",
+    "node_name": "consul",
+    "data_dir": "node",
+    "bind_addr": "127.0.0.1",
+    "client_addr": "127.0.0.1",
+    "advertise_addr_wan": "127.0.0.1",
+    "serf_wan": "127.0.0.1",
+    "serf_lan": "127.0.0.1",
+	"verify_server_hostname": false,
+	"telemetry": { 
+		"disable_compat_1.9": true
+	}
+}

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%-5level [%t][%d{dd MM yyyy HH:mm:ss,SSS}] %logger{36} - %msg%n" />
+		</Console>
+	</Appenders>
+	<Loggers>
+		<Logger name="org.springframework.web.filter.CommonsRequestLoggingFilter" level="OFF">
+<!-- 			<AppenderRef ref="Console" level="DEBUG"/> -->
+<!-- 			<AppenderRef ref="File" level="DEBUG"/> -->
+		</Logger>
+		<Root level="ALL">
+			<AppenderRef ref="Console" level="INFO"/>
+		</Root>
+	</Loggers>
+</configuration>
