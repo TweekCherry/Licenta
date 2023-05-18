@@ -1,8 +1,8 @@
 <template>
-  <router-view></router-view>
+  <div>Profile</div>
 </template>
 <script>
 export default {
-  name: 'App'
+  name: 'Profile'
 }
 </script>

@@ -1,8 +1,10 @@
 <template>
-  <router-view></router-view>
+  <v-footer app>
+
+  </v-footer>
 </template>
 <script>
 export default {
-  name: 'App'
+  name: 'Footer'
 }
 </script>

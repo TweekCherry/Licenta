@@ -1,26 +1,75 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView
+    component: () => import('@/layouts/MainLayout.vue'),
+    children: [
+      {
+        path: '/profile',
+        name: 'profile',
+        component: () => import('@/pages/Profile.vue')
+      },
+      {
+        path: '/support',
+        name: 'Support',
+        component: () => import('@/pages/Support.vue')
+      },
+      {
+        path: '/home',
+        name: 'Home',
+        component: () => import('@/pages/Home.vue')
+      },
+      {
+        path: '/consultations',
+        name: 'Consultations',
+        component: () => import('@/pages/Consultations.vue')
+      },
+      {
+        path: '/analysis',
+        name: 'Analysis',
+        component: () => import('@/pages/Analysis.vue')
+      },
+      {
+        path: '/appointments',
+        name: 'Appointments',
+        component: () => import('@/pages/Appointments.vue')
+      },
+      {
+        path: '/subscriptions',
+        name: 'Subscriptions',
+        component: () => import('@/pages/Subscriptions.vue')
+      },
+      {
+        path: '/physicians',
+        name: 'Physicians',
+        component: () => import('@/pages/Physicians.vue')
+      }
+    ]
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    path: '/login',
+    name: 'Login',
+    component: () => import('@/pages/Login.vue')
+  },
+  {
+    path: '/forgot-password',
+    name: 'forgot-password',
+    component: () => import('@/pages/ForgotPassword.vue')
+  },
+  {
+    path: '/:catchAll(.*)*',
+    name: '404',
+    component: () => import('@/pages/404.vue')
   }
 ]
 
 const router = new VueRouter({
+  mode: 'history',
+  scrollBehavior: () => ({ left: 0, top: 0 }),
   routes
 })
 

@@ -1,8 +1,8 @@
-const { defineConfig } = require('@vue/cli-service')
-module.exports = defineConfig({
+module.exports = {
   productionSourceMap: true,
-  transpileDependencies: true,
-  lintOnSave: false,
+
+  transpileDependencies: ['vuetify'],
+
   pwa: {
     name: 'Medicare Application',
     themeColor: '#517bbd',
@@ -23,6 +23,7 @@ module.exports = defineConfig({
       swSrc: 'src/service-worker-source.js'
     }
   },
+
   pluginOptions: {
     i18n: {
       locale: 'en',
@@ -36,4 +37,4 @@ module.exports = defineConfig({
       fullInstall: false
     }
   }
-})
+}

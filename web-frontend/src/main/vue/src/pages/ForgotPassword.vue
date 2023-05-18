@@ -1,8 +1,8 @@
 <template>
-  <router-view></router-view>
+  <div>ForgotPassword</div>
 </template>
 <script>
 export default {
-  name: 'App'
+  name: 'ForgotPassword'
 }
 </script>
