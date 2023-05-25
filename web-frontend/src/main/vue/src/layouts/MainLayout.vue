@@ -14,7 +14,7 @@
   </v-app>
 </template>
 <script>
-import Sidebar from '@/layouts/Sidebar.vue'
+import Sidebar from '@/layouts/Sidebar.vue' // legare componente
 import Headbar from '@/layouts/Headbar.vue'
 import Footer from '@/layouts/Footer.vue'
 export default {

@@ -28,13 +28,12 @@ export default {
     return {
       links: [
         { icon: 'mdi-home-account', title: 'Home', route: '/home' },
-        { icon: 'mdi-face-agent', title: 'Support', route: '/support' },
-        { icon: 'mdi-face-agent', title: 'Profile', route: '/profile' },
-        { icon: 'mdi-face-agent', title: 'Consultations', route: '/consultations' },
-        { icon: 'mdi-face-agent', title: 'Analysis', route: '/analysis' },
-        { icon: 'mdi-face-agent', title: 'Appointments', route: '/appointments' },
-        { icon: 'mdi-face-agent', title: 'Subscriptions', route: '/subscriptions' },
-        { icon: 'mdi-face-agent', title: 'Physicians', route: '/physicians' }
+        { icon: 'mdi-calendar-month', title: 'Appointments', route: '/appointments' },
+        { icon: 'mdi-folder-eye-outline', title: 'Consultations', route: '/consultations' },
+        { icon: 'mdi-file-document-multiple', title: 'Analysis', route: '/analysis' },
+        { icon: 'mdi-badge-account', title: 'Physicians', route: '/physicians' },
+        { icon: 'mdi-heart-multiple-outline', title: 'Subscriptions', route: '/subscriptions' }
+
       ]
     }
   }

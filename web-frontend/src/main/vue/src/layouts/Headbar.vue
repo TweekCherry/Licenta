@@ -33,9 +33,9 @@ export default {
   data() {
     return {
       links: [
-        { icon: 'mdi-face-agent', title: 'Profile', route: '/profile' },
+        { icon: 'mdi-face-man-profile', title: 'Profile', route: '/profile' },
         { icon: 'mdi-face-agent', title: 'Support', route: '/support' },
-        { icon: 'mdi-face-agent', title: 'Logout', route: '/login' }
+        { icon: 'mdi-logout', title: 'Logout', route: '/login' }
       ]
     }
   },
