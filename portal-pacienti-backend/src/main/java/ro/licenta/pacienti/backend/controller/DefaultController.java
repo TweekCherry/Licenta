@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ro.licenta.client.backend.controller;
+package ro.licenta.pacienti.backend.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;

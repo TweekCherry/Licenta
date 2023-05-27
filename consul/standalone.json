@@ -12,8 +12,5 @@
     "advertise_addr_wan": "127.0.0.1",
     "serf_wan": "127.0.0.1",
     "serf_lan": "127.0.0.1",
-	"verify_server_hostname": false,
-	"telemetry": { 
-		"disable_compat_1.9": true
-	}
+	"verify_server_hostname": false
 }

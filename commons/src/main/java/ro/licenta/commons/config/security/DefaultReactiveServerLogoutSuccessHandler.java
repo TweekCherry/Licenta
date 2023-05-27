@@ -1,4 +1,4 @@
-package ro.licenta.commons.config;
+package ro.licenta.commons.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,15 +11,15 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import ro.licenta.commons.config.notifications.VapidSessionRegistry;
 import ro.licenta.commons.domain.ApiToken;
-import ro.licenta.commons.service.ReactiveAutenticationService;
+import ro.licenta.commons.repository.ApiTokenRepository;
 
 @Component
 public class DefaultReactiveServerLogoutSuccessHandler implements ServerLogoutSuccessHandler {
 
 	@Autowired
-	private ReactiveAutenticationService reactiveAutenticationService;
-	@Autowired(required = false)
-	protected VapidSessionRegistry vapidSessionRegistry;
+	private ApiTokenRepository apiTokenRepository;
+//	@Autowired(required = false)
+//	protected VapidSessionRegistry vapidSessionRegistry;
 	
 	/** 
 	 * (non-Javadoc)
@@ -29,18 +29,17 @@ public class DefaultReactiveServerLogoutSuccessHandler implements ServerLogoutSu
 	public Mono<Void> onLogoutSuccess(WebFilterExchange exchange, Authentication authentication) {
 		if (authentication.getPrincipal() instanceof ApiToken) {
 			ApiToken apiToken = (ApiToken) authentication.getPrincipal();
-			if (vapidSessionRegistry != null) {
-				vapidSessionRegistry.removeSession(apiToken).flatMap(s->{
-					s.cancelSubscription(apiToken.getKey());
-					return Mono.empty();
-				}).subscribe();
-			}
+//			if (vapidSessionRegistry != null) {
+//				vapidSessionRegistry.removeSession(apiToken).flatMap(s->{
+//					s.cancelSubscription(apiToken.getKey());
+//					return Mono.empty();
+//				}).subscribe();
+//			}
 			
-			return reactiveAutenticationService.clearApiToken(apiToken.getKey())
+			return apiTokenRepository.deleteByKey(apiToken.getKey())
 				.then(Mono.fromRunnable(() -> {
 					ServerHttpResponse response = exchange.getExchange().getResponse();
 					response.setStatusCode(HttpStatus.ACCEPTED);
-//					response.getHeaders().add(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
 				}));
 		}
 		return Mono.empty();

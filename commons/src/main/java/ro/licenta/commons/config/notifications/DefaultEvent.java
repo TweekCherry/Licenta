@@ -3,10 +3,6 @@
  */
 package ro.licenta.commons.config.notifications;
 
-/**
- * @author r.m.ghimis
- *
- */
 public class DefaultEvent<T> implements Event {
 	private static final long serialVersionUID = 5387966155578542719L;
 	

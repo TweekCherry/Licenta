@@ -5,20 +5,17 @@ import org.springframework.stereotype.Repository;
 
 import reactor.core.publisher.Mono;
 import ro.licenta.commons.domain.Account;
+import ro.licenta.commons.domain.ApiToken;
 
 @Repository
 public interface AccountRepository extends ReactiveMongoRepository<Account, String> {
-
-	public Mono<Account> findByUsername(String username);
 	
 	public Mono<Account> findByEmail(String email);
 	
 	public Mono<Account> findByToken(String token);
-
-	public Mono<Boolean> existsByUsername(String name);
-
-	public Mono<Boolean> existsByUsernameAndIdNot(String name, String id);
 	
-	public Mono<Account> findById(String id);
+	public Mono<Boolean> existsByToken(String token);
 
+	public Mono<Boolean> existsByEmail(String email);
+	
 }

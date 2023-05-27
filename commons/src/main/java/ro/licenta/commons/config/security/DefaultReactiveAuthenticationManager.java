@@ -1,4 +1,4 @@
-package ro.licenta.commons.config;
+package ro.licenta.commons.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
@@ -7,18 +7,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import reactor.core.publisher.Mono;
-import ro.licenta.commons.service.ReactiveAutenticationService;
+import ro.licenta.commons.repository.ApiTokenRepository;
 
 @Component
 public class DefaultReactiveAuthenticationManager implements ReactiveAuthenticationManager {
 	
 	@Autowired
-	private ReactiveAutenticationService reactiveAutenticationService;
+	private ApiTokenRepository apiTokenRepository;
 	
 	@Override
 	public Mono<Authentication> authenticate(Authentication authentication) {
-		return reactiveAutenticationService.verifyToken(authentication.getPrincipal().toString())
-			.map(apiToken -> new UsernamePasswordAuthenticationToken(apiToken, authentication.getCredentials(), apiToken.getAuthorities()));
+		return apiTokenRepository.findByKey(authentication.getPrincipal().toString())
+			.filter(apiToken -> apiToken.isValid())
+			.map(apiToken -> new UsernamePasswordAuthenticationToken(apiToken, authentication.getCredentials(), apiToken.getRoles()));
 	}
 
 }

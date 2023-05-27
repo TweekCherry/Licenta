@@ -6,10 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * @since Oct 27 2021
- * @author NetRom
- */
 @Getter
 @Setter
 @NoArgsConstructor

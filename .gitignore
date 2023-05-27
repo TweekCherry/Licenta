@@ -12,3 +12,6 @@ consul/standalone/checks/67e20734152b14fb8681fa6440f47ffe546eda7c2573ec8a7659a52
 consul/standalone/
 commons/.classpath
 web-frontend/.classpath
+consul/consul.exe
+portal-pacienti-backend/.classpath
+portal-pacienti-backend/target/

@@ -7,11 +7,6 @@ import java.util.List;
 
 import ro.licenta.commons.config.security.CertificateContainer;
 
-/**
- * @author r.m.ghimis
- * @since Jan 28, 2022
- *
- */
 public interface SslService {
 	
 	/**

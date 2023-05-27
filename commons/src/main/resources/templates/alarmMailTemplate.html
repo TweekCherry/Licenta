@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+    </style>
+</head>
+<body>
+    Dear ${username},
+    <br/> You have the following alarms:
+    <br/>
+    <br/>
+
+
+    <#list alarms as alarm>
+        <div>
+        <#assign tab = "&nbsp;">
+        <#assign padding = 2>
+            <#if alarm.bgName??>
+                <span style="font-weight: bold">${alarm.bgName}</span>
+                <#assign tab = "&ensp;">
+                <#assign padding = 3>
+            </#if>
+            <#list alarm.deviceAlarmExports as deviceAlarm>
+                <div style="font-weight: bold"><#if deviceAlarm.networkNumber??>${tab} ${deviceAlarm.networkNumber} </#if>${deviceAlarm.deviceName}</div>
+                    <#list deviceAlarm.departmentAlarmExports as departmentAlarm>
+                        <div style="font-weight: bold">${tab}${tab}${tab}${tab} ${departmentAlarm.departmentNumber}: ${departmentAlarm.departmentName}</div>
+                        <ul style="padding-left:${padding}rem">
+                            <#if departmentAlarm.offlineSince??>
+                                <li>
+                                    <div style="color:#b5bdcc; font-weight: bold">Device Offline</div>
+                                    <div style="color:#b5bdcc; font-weight: bold">${departmentAlarm.offlineSince}</div>
+                                </li>
+                            </#if>
+                            <#list departmentAlarm.alarmElements as alarmElement>
+                                <li>
+                                    <#if alarmElement.cleared>
+                                        <div style="font-weight: bold"><del>${alarmElement.translation}</del></div>
+                                        <div>${alarmElement.timeStamp} - ${alarmElement.clearedTime}</div>
+                                    <#else>
+                                    	<#if departmentAlarm.offlineSince??>
+                                    		<div style="color:#b5bdcc; font-weight: bold">${alarmElement.translation}</div>
+                                        	<div>${alarmElement.timeStamp}</div>
+                                    	<#else>
+                                        	<div style="color:red; font-weight: bold">${alarmElement.translation}</div>
+                                        	<div>${alarmElement.timeStamp}</div>
+                                        </#if>
+                                    </#if>
+                                </li>
+                            </#list>
+                         </ul>
+                    </#list>
+            </#list>
+        </div>
+    </#list>
+</body>
+</html>

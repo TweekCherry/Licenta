@@ -83,7 +83,7 @@ public final class CertificateContainer {
 	
 	@Override
 	public String toString() {
-		try {// fk this but we need it
+		try {
 			return ""
 			+ "      certificate: " + Base64.getEncoder().encodeToString(certificate.getEncoded()) + "\n"
 			+ "      privateKey: " + Base64.getEncoder().encodeToString(privateKey.getEncoded()) + "\n"

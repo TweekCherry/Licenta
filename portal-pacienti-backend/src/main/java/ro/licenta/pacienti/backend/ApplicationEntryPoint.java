@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ro.licenta.client.backend;
+package ro.licenta.pacienti.backend;
 
 import java.security.Security;
 import java.time.ZoneId;
@@ -21,8 +21,8 @@ import ro.licenta.commons.config.security.DefaultSecurityConfig;
 @EnableDiscoveryClient
 @Import({MongodbConfig.class, ConsulClientAspect.class, DefaultSecurityConfig.class })
 @SpringBootApplication(scanBasePackages = {
-	"ro.licenta.commons.config",
-	"ro.licenta.client.backend"
+	"ro.licenta.commons",
+	"ro.licenta.pacienti.backend.controller"
 })
 public class ApplicationEntryPoint {
 

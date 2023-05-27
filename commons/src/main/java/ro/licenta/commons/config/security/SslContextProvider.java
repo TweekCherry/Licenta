@@ -54,7 +54,6 @@ import org.bouncycastle.jce.X509KeyUsage;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.bc.BcRSAContentSignerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.server.SslStoreProvider;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.Ordered;
@@ -66,19 +65,19 @@ import io.netty.handler.ssl.SslContextBuilder;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
+import ro.licenta.commons.components.LicentaProperties;
 
 
 @Log4j2
 @Component
 @RefreshScope
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@ConditionalOnProperty(name = "optilink.ssl.enabled", havingValue = "true")
 public class SslContextProvider implements SslStoreProvider {
 	
 	private final int strength = 4096;
 	
 	@Autowired
-	private SslConfigProperties sslConfigProperties;
+	private LicentaProperties licentaProperties;
 
 	private KeyStore keyStore;
 	private KeyStore trustStore;
@@ -107,14 +106,14 @@ public class SslContextProvider implements SslStoreProvider {
 	public void postConstruct() throws Exception {
 		log.info("Loading SSL context");
 		this.caCertificateContainer = this.load(
-			sslConfigProperties.getCa().getCertificate(), 
-			sslConfigProperties.getCa().getPublicKey(), 
-			sslConfigProperties.getCa().getPrivateKey()
+			licentaProperties.getCa().getCertificate(), 
+			licentaProperties.getCa().getPublicKey(), 
+			licentaProperties.getCa().getPrivateKey()
 		);
 		this.serviceCertificateContainer = this.load(
-			sslConfigProperties.getApplication().getCertificate(), 
-			sslConfigProperties.getApplication().getPublicKey(), 
-			sslConfigProperties.getApplication().getPrivateKey()
+			licentaProperties.getApplication().getCertificate(), 
+			licentaProperties.getApplication().getPublicKey(), 
+			licentaProperties.getApplication().getPrivateKey()
 		);
 		this.trustStore.setCertificateEntry("ca", caCertificateContainer.getCertificate());
 		

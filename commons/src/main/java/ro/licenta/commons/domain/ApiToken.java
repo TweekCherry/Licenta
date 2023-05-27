@@ -4,10 +4,12 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -39,7 +41,7 @@ public class ApiToken implements Serializable {
 	private LocalDateTime createdAt;
 	private VapidSubscription vapidSubscription;
 	@JsonDeserialize(using = GrantedAuthoritySerializer.class)
-	private Set<GrantedAuthority> authorities = new HashSet<>();
+	private Set<GrantedAuthority> roles = new HashSet<>();
 
 	@JsonIgnore
 	public Boolean isValid() {
@@ -48,9 +50,21 @@ public class ApiToken implements Serializable {
 	
 	@JsonIgnore
 	public Boolean hasRole(String role) {
-		return authorities.stream()
+		return roles.stream()
 			.filter(r -> r.getAuthority().equals(role))
 			.findAny().isPresent();
 	}
 	
+	public ApiToken(Account account, Boolean rememberMe) {
+		this.key = UUID.randomUUID().toString();
+		this.user = account.getId();
+		this.createdAt = LocalDateTime.now();
+		this.expiresAt = this.createdAt.plusDays(1L);
+		if (rememberMe) {
+			this.expiresAt = this.createdAt.plusDays(30L);
+		}
+		account.getRoles().forEach(r -> {
+			this.getRoles().add(new SimpleGrantedAuthority(r));
+		});
+	}
 }

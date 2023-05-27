@@ -1,4 +1,4 @@
-package ro.licenta.commons.config.security;
+package ro.licenta.commons.components;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -9,22 +9,29 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@ConfigurationProperties(SslConfigProperties.PREFIX)
-public class SslConfigProperties {
+@ConfigurationProperties(LicentaProperties.PREFIX)
+public class LicentaProperties {
 
-	public static final String PREFIX = "optilink.ssl";
-	/**
-	 * Enable the SSL context and TLS authentication
-	 * */
-	private Boolean enabled = false;
+	public static final String PREFIX = "licenta";
+	
 	private CertificateContainer ca = new CertificateContainer();
 	private CertificateContainer application = new CertificateContainer();
-		
+	private PushService pushService = new PushService();
+	
 	@Getter
 	@Setter
 	@NoArgsConstructor
 	public static class CertificateContainer {
 		private String certificate;
+		private String publicKey;
+		private String privateKey;
+	}
+	
+	@Getter
+	@Setter
+	@NoArgsConstructor
+	public static class PushService {
+		private String subject;
 		private String publicKey;
 		private String privateKey;
 	}

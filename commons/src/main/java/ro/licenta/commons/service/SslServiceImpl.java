@@ -55,11 +55,6 @@ import org.springframework.stereotype.Service;
 import lombok.SneakyThrows;
 import ro.licenta.commons.config.security.CertificateContainer;
 
-/**
- * @author r.m.ghimis
- * @since Jan 28, 2022
- *
- */
 @Service
 public class SslServiceImpl implements SslService {
 
@@ -69,27 +64,14 @@ public class SslServiceImpl implements SslService {
 		Security.addProvider(new BouncyCastleProvider());
 		SslServiceImpl service = new SslServiceImpl();
 		CertificateContainer rootCA = service.generate();
-		String domain = "optilinkserver.org";
-//		String domain = "localhost.com";
+		String domain = "localhost.ro";
 		List<String> alternativeDnsNames = new ArrayList<>();
 		alternativeDnsNames.add("*."+domain);
 		alternativeDnsNames.add(domain);
 		List<String> alternativeIpAddresses = new ArrayList<>();
-		alternativeIpAddresses.add("145.239.8.124");//acceptance node 1
-		alternativeIpAddresses.add("145.239.8.133");//acceptance node 2
 		alternativeIpAddresses.add("127.0.0.1");///loopback
-//		alternativeIpAddresses.add("178.33.66.18");// production virtual ip
-//		//production node 1
-//		alternativeIpAddresses.add("51.91.70.55");
-//		alternativeIpAddresses.add("192.168.169.1");
-//		//production node 2
-//		alternativeIpAddresses.add("51.91.70.56");
-//		alternativeIpAddresses.add("192.168.169.2");
-//		//production node 3
-//		alternativeIpAddresses.add("51.91.70.57");
-//		alternativeIpAddresses.add("192.168.169.3");
 		CertificateContainer serviceCertificate = service.generate(rootCA, "*."+domain, alternativeDnsNames, alternativeIpAddresses);
-		System.out.println("optilink:\r\n"
+		System.out.println(":\r\n"
 				+ "  ssl:\r\n"
 				+ "    enabled: true\r\n"
 				+ "    ca:");
@@ -127,10 +109,10 @@ public class SslServiceImpl implements SslService {
 		Date notBefore = new Date(System.currentTimeMillis() - Duration.ofDays(1L).toMillis());
 		Date notAfter = new Date(System.currentTimeMillis() + Duration.ofDays(365L * 5).toMillis());
 		X500Name subject = new X500NameBuilder()
-			.addRDN(BCStyle.C, "NL")
+			.addRDN(BCStyle.C, "ro")
 			.addRDN(BCStyle.CN, subjectName)
-			.addRDN(BCStyle.OU, "H&F")
-			.addRDN(BCStyle.O, "Optilink")
+			.addRDN(BCStyle.OU, "H&C")
+			.addRDN(BCStyle.O, "Intelligent Health and Care")
 			.build();
 		SubjectPublicKeyInfo subjectPublicKeyInfo = SubjectPublicKeyInfoFactory.createSubjectPublicKeyInfo(keyPair.getPublic());
 		X509v3CertificateBuilder builder = new X509v3CertificateBuilder(rootCA.getCertificateHolder().getIssuer(), serialNumber, notBefore, notAfter, subject, subjectPublicKeyInfo);
@@ -165,10 +147,10 @@ public class SslServiceImpl implements SslService {
 	@SneakyThrows
 	public CertificateContainer generate() {
 		X500Name issuer = new X500NameBuilder()
-			.addRDN(BCStyle.C, "NL")
-			.addRDN(BCStyle.CN, "optilinkserver.org")
-			.addRDN(BCStyle.OU, "H&F")
-			.addRDN(BCStyle.O, "Optilink")
+			.addRDN(BCStyle.C, "ro")
+			.addRDN(BCStyle.CN, "localhost.ro")
+			.addRDN(BCStyle.OU, "H&C")
+			.addRDN(BCStyle.O, "Intelligent Health and Care")
 			.build();
 		RSAKeyPairGenerator keyPairGenerator = new RSAKeyPairGenerator();
 		keyPairGenerator.init(new RSAKeyGenerationParameters(

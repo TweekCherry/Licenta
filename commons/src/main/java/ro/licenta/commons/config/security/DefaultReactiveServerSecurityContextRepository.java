@@ -1,4 +1,4 @@
-package ro.licenta.commons.config;
+package ro.licenta.commons.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;

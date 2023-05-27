@@ -2,8 +2,6 @@ package ro.licenta.commons.domain;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -17,19 +15,22 @@ import lombok.experimental.Accessors;
 @Setter
 @NoArgsConstructor
 @Accessors(chain = true)
-@Document(Account.KEY_SPACE)
-public class Account implements Serializable {
+@Document(Profile.KEY_SPACE)
+public class Profile implements Serializable {
 	private static final long serialVersionUID = -4462979946943376231L;
 
-	public static final String KEY_SPACE = "accounts";
+	public static final String KEY_SPACE = "profile";
 
 	@Id
 	private String id;
-	private String email;
-	private String password;
-	private LocalDate createDate;
-	private String token;
-
-	private Set<String> roles = new HashSet<>();
+	private String user;
+	private String firstName;
+	private String lastName;
+	private String phoneNumber;
+	private LocalDate dateOfBirth;
+	private String cnp;
+	private String gender;
+	private Integer age;
+	private Address address;
 
 }

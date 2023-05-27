@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%-5level [%t][%d{dd MM yyyy HH:mm:ss,SSS}] %logger{36} - %msg%n" />
+		</Console>
+	</Appenders>
+	<Loggers>
+		<Logger name="org.springframework.data.mongodb.core.ReactiveMongoTemplate" level="DEBUG"></Logger>
+		<Logger name="org.apache.http" level="OFF"></Logger>
+		
+		<Root level="ALL">
+			<AppenderRef ref="Console" level="INFO"/>
+		</Root>
+	</Loggers>
+</configuration>

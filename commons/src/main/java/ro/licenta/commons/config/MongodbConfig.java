@@ -15,7 +15,7 @@ import org.springframework.transaction.reactive.TransactionalOperator;
 
 @Configuration
 @EnableTransactionManagement
-@EnableReactiveMongoRepositories(basePackages = { "ro.licenta.commons.repositories" }, repositoryImplementationPostfix = "CustomImpl")
+@EnableReactiveMongoRepositories(basePackages = { "ro.licenta.commons.repository" }, repositoryImplementationPostfix = "CustomImpl")
 public class MongodbConfig {
 	
 	@Bean

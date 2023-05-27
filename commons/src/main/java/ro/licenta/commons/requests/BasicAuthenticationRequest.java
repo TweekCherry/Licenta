@@ -1,4 +1,4 @@
-package ro.licenta.commons;
+package ro.licenta.commons.requests;
 
 import java.io.Serializable;
 
@@ -14,12 +14,8 @@ import lombok.experimental.Accessors;
 public class BasicAuthenticationRequest implements Serializable {
 	private static final long serialVersionUID = -4626947796060208661L;
 
-	protected String username;
+	protected String email;
 	protected String password;
-	
-	public BasicAuthenticationRequest(String username, String password) {
-		this.username = username;
-		this.password = password;
-	}
+	protected Boolean rememberMe = false;
 	
 }

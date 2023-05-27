@@ -25,11 +25,6 @@ import ro.licenta.commons.config.notifications.VapidSessionRegistry;
 import ro.licenta.commons.domain.VapidSubscription;
 import ro.licenta.commons.repository.ApiTokenRepository;
 
-/**
- * @author r.m.ghimis
- * @since Feb 7, 2022
- *
- */
 @Log4j2
 @RestController
 @RequestMapping("/api/v2/notifications")

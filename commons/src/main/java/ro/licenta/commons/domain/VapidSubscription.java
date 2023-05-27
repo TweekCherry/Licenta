@@ -7,10 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * @since May 8, 2023
- * @author i.a.pricina
- */
 @Getter
 @Setter
 @NoArgsConstructor
