@@ -122,12 +122,8 @@
 	<modules>
 		<module>consul</module>
 		<module>traefik</module>
-		<module>web-frontend</module>
-		<module>web-backend</module>
-		<module>management-frontend</module>
-		<module>management-backend</module>
 		<module>commons</module>
-		<module>portal-pacienti</module>
+		<module>portal-pacienti-frontend</module>
 		<module>portal-pacienti-backend</module>
 	</modules>
 </project>

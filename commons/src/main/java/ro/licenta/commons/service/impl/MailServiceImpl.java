@@ -41,7 +41,8 @@ public class MailServiceImpl implements MailService {
 			try {
 	            MimeMessage mimeMessage = emailSender.createMimeMessage();
 	            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "utf-8");
-	            ModelMap modelMap = new ModelMap(content);
+	            ModelMap modelMap = new ModelMap();
+	            modelMap.mergeAttributes(content);
 	            mimeMessage.setContent(this.build(templatePath, modelMap), "text/html");
 	            helper.setTo(address);
 	            helper.setSubject(subject);

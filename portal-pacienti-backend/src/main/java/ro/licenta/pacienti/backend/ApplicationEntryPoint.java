@@ -16,13 +16,12 @@ import org.springframework.context.annotation.Import;
 
 import ro.licenta.commons.ConsulClientAspect;
 import ro.licenta.commons.config.MongodbConfig;
-import ro.licenta.commons.config.security.DefaultSecurityConfig;
 
 @EnableDiscoveryClient
-@Import({MongodbConfig.class, ConsulClientAspect.class, DefaultSecurityConfig.class })
+@Import({MongodbConfig.class, ConsulClientAspect.class})
 @SpringBootApplication(scanBasePackages = {
 	"ro.licenta.commons",
-	"ro.licenta.pacienti.backend.controller"
+	"ro.licenta.pacienti.backend"
 })
 public class ApplicationEntryPoint {
 

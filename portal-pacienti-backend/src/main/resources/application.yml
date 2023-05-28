@@ -22,6 +22,9 @@ spring:
   jackson:
     serialization:
       write-dates-as-timestamps: false
+  rabbitmq:
+    username: root
+    password: root
   data:
     mongodb:
       authentication-database: licenta
@@ -30,8 +33,6 @@ spring:
       repositories:
         type: reactive
       uri: mongodb://licenta:${spring.data.mongodb.password}@127.0.0.1:27017/licenta
-  rabbitmq:    username: root
-    password: root
   mail:
     test-connection: true
     host: mail.shield-solutions.com

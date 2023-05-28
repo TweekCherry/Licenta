@@ -30,7 +30,7 @@ public class Profile implements Serializable {
 	private LocalDate dateOfBirth;
 	private String cnp;
 	private String gender;
-	private Integer age;
+	private Long age;
 	private Address address;
 
 }
