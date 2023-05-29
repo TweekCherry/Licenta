@@ -4,8 +4,9 @@
       <v-spacer></v-spacer>
       <v-menu left offset-y>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn icon v-bind="attrs" v-on="on">
+          <v-btn plain v-bind="attrs" v-on="on">
             <v-icon>mdi-account-circle-outline</v-icon>
+            <span>{{ username }}</span>
           </v-btn>
         </template>
         <v-list>
@@ -34,9 +35,17 @@ export default {
     return {
       links: [
         { icon: 'mdi-face-man-profile', title: 'Profile', route: '/profile' },
-        { icon: 'mdi-face-agent', title: 'Support', route: '/support' },
+        { icon: 'mdi-card-account-mail-outline', title: 'Contact', route: '/contact' },
         { icon: 'mdi-logout', title: 'Logout', route: '/logout' }
       ]
+    }
+  },
+  computed: {
+    username() {
+      if (this.$store.state.profile !== null) {
+        return `${this.$store.state.profile.firstName} ${this.$store.state.profile.lastName}`
+      }
+      return ''
     }
   },
   methods: {

@@ -110,6 +110,14 @@ public class SecurityController {
 					profile.setLastName(registerRequest.getLastName());
 					profile.setPhoneNumber(registerRequest.getPhoneNumber());
 					
+					String male = "135";
+					String female = "246";
+					if (male.contains("" + registerRequest.getCnp().charAt(0))) {
+						profile.setGender("Male");
+					} else if (female.contains("" + registerRequest.getCnp().charAt(0))) {
+						profile.setGender("Female");
+					}
+					
 					LocalDate dateOfBirth = LocalDate.of(
 						Integer.parseInt(registerRequest.getCnp().substring(1, 3)), // year
 						Integer.parseInt(registerRequest.getCnp().substring(3, 5)), // month
@@ -119,7 +127,6 @@ public class SecurityController {
 					profile.setAge(age);
 					profile.setDateOfBirth(dateOfBirth);
 					profile.setCnp(registerRequest.getCnp());
-					profile.setGender(registerRequest.getGender());
 					profile.setAddress(new Address());
 					profile.getAddress().setCity(registerRequest.getCity());
 					profile.getAddress().setCounty(registerRequest.getCounty());

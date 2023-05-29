@@ -39,6 +39,7 @@
 </template>
 <script>
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
+import backend from '@/plugins/backend'
 export default {
   name: 'ForgotPasswordComplete',
   components: {
@@ -73,7 +74,7 @@ export default {
     },
     sendResetPasswordConfirmation() {
       this.loading = true
-      this.$completeForgotPassword(this.$route.query.token, this.password)
+      backend.$completeForgotPassword(this.$route.query.token, this.password)
         .then(response => {
           this.$store.commit('login', response.data)
           this.$router.push({ name: 'Home' })

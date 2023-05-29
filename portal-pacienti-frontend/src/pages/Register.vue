@@ -90,6 +90,7 @@
 
 <script>
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
+import backend from '@/plugins/backend'
 
 export default {
   name: 'Register',
@@ -119,17 +120,6 @@ export default {
     }
   },
   computed: {
-    gender() {
-      if (this.registerRequest.cnp.length > 0) {
-        const number = this.registerRequest.cnp.charAt(0)
-        if (number === '1' || number === '3' || number === '5') {
-          return 'MALE'
-        } else if (number === '2' || number === '4' || number === '6') {
-          return 'FEMALE'
-        }
-      }
-      return ''
-    },
     passwordInputType() {
       if (this.isPasswordVisible) {
         return 'text'
@@ -150,7 +140,7 @@ export default {
     sendRegisterRequest() {
       this.loading = true
       const redirectUrl = window.location.origin + '/register-complete'
-      this.$register(redirectUrl, { ...this.registerRequest, gender: this.gender })
+      backend.$register(redirectUrl, this.registerRequest)
         .then(response => {
           alert('Your account created successfully, please check your email for confirmation')
         }).catch(() => {

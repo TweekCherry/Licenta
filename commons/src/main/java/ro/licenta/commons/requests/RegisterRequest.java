@@ -15,7 +15,6 @@ public class RegisterRequest {
 	private String password;
 	private String phoneNumber;
 	private String cnp;
-	private String gender;
 	private String city;
 	private String county;
 	private String street;

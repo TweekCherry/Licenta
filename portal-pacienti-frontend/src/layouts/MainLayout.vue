@@ -17,6 +17,8 @@
 import Sidebar from '@/layouts/Sidebar.vue' // legare componente
 import Headbar from '@/layouts/Headbar.vue'
 import Footer from '@/layouts/Footer.vue'
+import backend from '@/plugins/backend'
+import store from '@/store'
 export default {
   name: 'MainLayout',
   components: {
@@ -26,6 +28,12 @@ export default {
     return {
       drawer: true
     }
+  },
+  beforeRouteEnter(to, from, next) {
+    return backend.$findUserProfile().then(r => {
+      store.commit('userProfile', r.data)
+    }).catch(e => { console.log(e) })
+      .then(() => next())
   },
   mounted() {
     if (this.$vuetify.breakpoint.mobile) {

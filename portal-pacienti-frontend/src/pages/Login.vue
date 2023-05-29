@@ -48,6 +48,7 @@
 
 <script>
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
+import backend from '@/plugins/backend'
 
 export default {
   name: 'Login',
@@ -86,7 +87,7 @@ export default {
     sendLoginRequest() {
       this.loading = true
 
-      this.$login(this.email, this.password, this.rememberMe)
+      backend.$login(this.email, this.password, this.rememberMe)
         .then(response => {
           this.$store.commit('login', response.data)
           this.$router.push({ name: 'Home' })

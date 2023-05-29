@@ -6,7 +6,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    apiToken: null
+    apiToken: null,
+    profile: null
   },
   getters: {
   },
@@ -24,6 +25,9 @@ export default new Vuex.Store({
       if (apiToken !== null) {
         state.apiToken = apiToken
       }
+    },
+    userProfile(state, profile) {
+      state.profile = profile
     }
   },
   actions: {

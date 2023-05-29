@@ -20,6 +20,7 @@
   </v-app>
 </template>
 <script>
+import backend from '@/plugins/backend'
 export default {
   name: 'RegisterComplete',
   data() {
@@ -29,7 +30,7 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {
-      return vm.$completeRegistration(to.query.token).then(response => {
+      return backend.$completeRegistration(to.query.token).then(response => {
         vm.$store.commit('login', response.data)
         vm.$router.push({ name: 'Home' })
       }).catch(e => { })

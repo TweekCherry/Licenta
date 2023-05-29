@@ -32,6 +32,7 @@
 
 <script>
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
+import backend from '@/plugins/backend'
 
 export default {
   name: 'ForgotPassword',
@@ -51,7 +52,7 @@ export default {
     sendForgotPasswordRequest() {
       this.loading = true
       const redirectUrl = window.location.origin + '/forgot-password-complete'
-      this.$forgotPassword(redirectUrl, this.forgotPasswordRequest).then(response => {
+      backend.$forgotPassword(redirectUrl, this.forgotPasswordRequest).then(response => {
         alert('Please check your email')
       }).catch(() => {
         alert('An error occured')

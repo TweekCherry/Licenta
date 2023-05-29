@@ -69,9 +69,9 @@ const routes = [
         }
       },
       {
-        path: '/support',
-        name: 'Support',
-        component: () => import('@/pages/Support.vue')
+        path: '/contact',
+        name: 'Contact',
+        component: () => import('@/pages/Contact.vue')
       }
     ]
   },
