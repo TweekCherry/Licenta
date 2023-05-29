@@ -69,5 +69,8 @@ export default {
   },
   $updateUserProfile: function(profile) {
     return api.post('/account/profile', profile)
+  },
+  $findMedics: function() {
+    return api.get('/medics')
   }
 }

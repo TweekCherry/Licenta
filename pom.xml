@@ -125,5 +125,9 @@
 		<module>commons</module>
 		<module>portal-pacienti-frontend</module>
 		<module>portal-pacienti-backend</module>
+		<module>protal-medici-backend</module>
+		<module>portal-administrare-backend</module>
+		<module>portal-administrare-frontend</module>
+		<module>portal-medici-frontend</module>
 	</modules>
 </project>

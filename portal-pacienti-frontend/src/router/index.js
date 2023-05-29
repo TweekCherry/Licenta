@@ -7,6 +7,7 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
+    name: 'Layout',
     component: () => import('@/layouts/MainLayout.vue'),
     meta: {
       authenticationRequired: true
@@ -128,6 +129,9 @@ router.beforeEach((to, from, next) => {
   if (to.name === 'Logout') {
     store.commit('logout')
     return next({ name: 'Login' })
+  }
+  if (to.name === 'Layout') {
+    return next({ name: 'Home' })
   }
   return next()
 })

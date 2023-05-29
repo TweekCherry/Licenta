@@ -16,3 +16,7 @@ consul/consul.exe
 portal-pacienti-backend/.classpath
 portal-pacienti-backend/target/
 portal-pacienti-backend/.factorypath
+protal-medici-backend/.classpath
+protal-medici-backend/target/
+portal-administrare-backend/target/
+portal-administrare-backend/.classpath

@@ -1,7 +1,6 @@
 package ro.licenta.commons.domain;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDate;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -15,15 +14,17 @@ import lombok.experimental.Accessors;
 @Setter
 @NoArgsConstructor
 @Accessors(chain = true)
-@Document(Subscription.KEY_SPACE)
-public class Subscription {
+@Document(Consultation.KEY_SPACE)
+public class Consultation {
 	
-	public static final String KEY_SPACE = "subscriptions";
-	
+	public static final String KEY_SPACE = "consultations";
+
 	@Id
 	private String id;
-	private String name;
-	private String description;
-	private Set<SubscriptionBenefit> benefits = new HashSet<>();
-	private Float price;
+	private String user;
+	private LocalDate date;
+	private Clinic clinic;
+	private Medic medic;
+	private String diagnostic;
+	private Prescription prescription;
 }

@@ -32,5 +32,6 @@ public class Profile implements Serializable {
 	private String gender;
 	private Long age;
 	private Address address;
+	private String subscription;
 
 }

@@ -1,8 +1,9 @@
 package ro.licenta.commons.domain;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Getter;
@@ -19,11 +20,13 @@ public class Medic {
 
 	public static final String KEY_SPACE = "medics";
 	
+	@Id
 	private String id;
 	private String firstName;
 	private String lastName;
 	private String profile; // base64 image
 	private String title;
-	private String grade;
-	private List<Departament> departments = new ArrayList<>();
+	private Grade grade;
+	private Set<Departament> departments = new HashSet<>();
+	private String clinic;
 }

@@ -1,5 +1,8 @@
 package ro.licenta.commons.domain;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -21,6 +24,7 @@ public class Investigation {
 	private String id;
 	private String name;
 	private Float price;
-	private String category;
+	private String department;
 	private String type;
+	private Set<String> clinic = new HashSet<>();
 }
