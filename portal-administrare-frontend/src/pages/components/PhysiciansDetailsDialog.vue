@@ -179,19 +179,20 @@ export default {
       }
       request.then(r => {
         this.$emit('save')
+        this.showSuccessNotification('Data saved successfully')
         this.visible = false
-      }).catch(e => { alert('An error occured, try again later') })
+      }).catch(e => { this.showErrorNotification('An error occured, try again later') })
         .then(() => { this.loading = false })
     },
     loadAvailableClinics() {
       return backend.$findClinics().then(r => {
         this.availableClinics = r.data
-      }).catch(e => { console.log(e) })
+      }).catch(e => { this.showErrorNotification('An error occured, try again later') })
     },
     loadAvailableDepartments() {
       return backend.$findDepartments().then(r => {
         this.availableDepartments = r.data
-      }).catch(e => { console.log(e) })
+      }).catch(e => { this.showErrorNotification('An error occured, try again later') })
     },
     newMedicData() {
       return {

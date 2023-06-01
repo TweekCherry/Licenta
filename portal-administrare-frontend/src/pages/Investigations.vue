@@ -97,15 +97,18 @@ export default {
       this.loading = true
       backend.$findInvestigations().then(r => {
         this.items = r.data
-      }).catch(e => { alert('An error occured, try again later') })
+      }).catch(e => { this.showErrorNotification('An error occured, try again later') })
         .then(() => { this.loading = false })
     },
     deleteItem(id) {
-      this.loading = true
-      backend.$removeInvestigation(id).then(r => {
-        this.loadItems()
-      }).catch(e => { alert('An error occured, try again later') })
-        .then(() => { this.loading = false })
+      this.showConfirmationDialog('Do you want to remove this investigation?').then(() => {
+        this.loading = true
+        backend.$removeInvestigation(id).then(r => {
+          this.showSuccessNotification('Investigation removed successfuly')
+          this.loadItems()
+        }).catch(e => { this.showErrorNotification('An error occured, try again later') })
+          .then(() => { this.loading = false })
+      })
     },
     editItem(item) {
       this.selectedItem = item

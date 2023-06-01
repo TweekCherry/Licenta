@@ -102,15 +102,18 @@ export default {
       this.loading = true
       backend.$findSubscriptions().then(r => {
         this.subscriptions = r.data
-      }).catch(e => { alert('An error occured, try again later') })
+      }).catch(e => { this.showErrorNotification('An error occured, try again later') })
         .then(() => { this.loading = false })
     },
     deleteSubscription(id) {
-      this.loading = true
-      backend.$removeSubscription(id).then(r => {
-        this.loadSubscriptions()
-      }).catch(e => { alert('An error occured, try again later') })
-        .then(() => { this.loading = false })
+      this.showConfirmationDialog('Do you want to remove this subscription').then(() => {
+        this.loading = true
+        backend.$removeSubscription(id).then(r => {
+          this.showSuccessNotification('Subscription removed successfully')
+          this.loadSubscriptions()
+        }).catch(e => { this.showErrorNotification('An error occured, try again later') })
+          .then(() => { this.loading = false })
+      })
     },
     editSubscription(subscription) {
       this.subscription = subscription

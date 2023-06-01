@@ -79,7 +79,7 @@ export default {
           this.$store.commit('login', response.data)
           this.$router.push({ name: 'Home' })
         }).catch(() => {
-          alert('An error occured, try again later')
+          this.showErrorNotification('An error occured, try again later')
         })
         .then(() => { this.loading = false })
     }

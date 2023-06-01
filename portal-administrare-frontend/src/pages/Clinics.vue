@@ -28,7 +28,7 @@
             <v-btn icon @click="editItem(item)">
               <v-icon>mdi-home-edit-outline</v-icon>
             </v-btn>
-            <v-btn icon @click="deleteItem(item.id)">
+            <v-btn icon @click="deleteItem(item.id)" color="red">
               <v-icon>mdi-delete-outline</v-icon>
             </v-btn>
           </div>
@@ -88,15 +88,18 @@ export default {
       this.loading = true
       backend.$findClinics().then(r => {
         this.items = r.data
-      }).catch(e => { alert('An error occured, try again later') })
+      }).catch(e => { this.showErrorNotification('An error occured, try again later') })
         .then(() => { this.loading = false })
     },
     deleteItem(id) {
-      this.loading = true
-      backend.$removeClinic(id).then(r => {
-        this.loadItems()
-      }).catch(e => { alert('An error occured, try again later') })
-        .then(() => { this.loading = false })
+      this.showConfirmationDialog('Do you want to remove this clinic?').then(() => {
+        this.loading = true
+        backend.$removeClinic(id).then(r => {
+          this.showSuccessNotification('Clinic removed successfully')
+          this.loadItems()
+        }).catch(e => { this.showErrorNotification('An error occured, try again later') })
+          .then(() => { this.loading = false })
+      })
     },
     editItem(item) {
       this.selectedItem = item

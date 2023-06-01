@@ -18,4 +18,6 @@ public interface AccountRepository extends ReactiveMongoRepository<Account, Obje
 	
 	public Mono<Boolean> existsByEmailAndIdNot(String email, ObjectId id);
 	
+	public Mono<Long> countByRoles(String role);
+	
 }

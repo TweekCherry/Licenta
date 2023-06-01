@@ -119,5 +119,8 @@ export default {
   },
   $removeMedic: function(id) {
     return api.delete(`/medics/${id}`)
+  },
+  $findStats: function() {
+    return api.get('/stats')
   }
 }

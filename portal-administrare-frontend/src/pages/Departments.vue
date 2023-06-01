@@ -67,15 +67,18 @@ export default {
       this.loading = true
       backend.$findDepartments().then(r => {
         this.departments = r.data
-      }).catch(e => { alert('An error occured, try again later') })
+      }).catch(e => { this.showErrorNotification('An error occured, try again later') })
         .then(() => { this.loading = false })
     },
     deleteDepartment(id) {
-      this.loading = true
-      backend.$removeDepartment(id).then(r => {
-        this.loadDepartments()
-      }).catch(e => { alert('An error occured, try again later') })
-        .then(() => { this.loading = false })
+      this.showConfirmationDialog('Do you want to remove this department?').then(() => {
+        this.loading = true
+        backend.$removeDepartment(id).then(r => {
+          this.showSuccessNotification('Department removed successfully')
+          this.loadDepartments()
+        }).catch(e => { this.showErrorNotification('An error occured, try again later') })
+          .then(() => { this.loading = false })
+      })
     },
     editDepartment(department) {
       this.department = department

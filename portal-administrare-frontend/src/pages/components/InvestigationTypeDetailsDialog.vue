@@ -79,8 +79,9 @@ export default {
       this.loading = true
       backend.$saveInvestigationType(this.id, this.investigationTypeData).then(r => {
         this.$emit('save')
+        this.showSuccessNotification('Data saved successfully')
         this.visible = false
-      }).catch(e => { alert('An error occured, try again later') })
+      }).catch(e => { this.showErrorNotification('An error occured, try again later') })
         .then(() => { this.loading = false })
     },
     newInvestigationType() {

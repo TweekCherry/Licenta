@@ -53,9 +53,9 @@ export default {
       this.loading = true
       const redirectUrl = window.location.origin + '/forgot-password-complete'
       backend.$forgotPassword(redirectUrl, this.forgotPasswordRequest).then(response => {
-        alert('Please check your email')
+        this.showSuccessNotification('Please check your email')
       }).catch(() => {
-        alert('An error occured')
+        this.showErrorNotification('An error occured')
       }).then(() => { this.loading = false })
     }
   }

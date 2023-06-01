@@ -131,15 +131,16 @@ export default {
       this.loading = true
       backend.$saveSubscription(this.subscriptionData).then(r => {
         this.$emit('save')
+        this.showSuccessNotification('Data saved successfully')
         this.visible = false
-      }).catch(e => { alert('An error occured, try again later') })
+      }).catch(e => { this.showErrorNotification('An error occured, try again later') })
         .then(() => { this.loading = false })
     },
     loadAvailableInvestigations() {
       this.loading = true
       backend.$findInvestigations().then(r => {
         this.availableInvestigations = r.data
-      }).catch(e => { alert('An error occured, try again later') })
+      }).catch(e => { this.showErrorNotification('An error occured, try again later') })
         .then(() => { this.loading = false })
     },
     addBenefit() {

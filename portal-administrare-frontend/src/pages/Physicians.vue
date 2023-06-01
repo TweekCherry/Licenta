@@ -107,15 +107,18 @@ export default {
       this.loading = true
       backend.$findMedics().then(r => {
         this.items = r.data
-      }).catch(e => { alert('An error occured, try again later') })
+      }).catch(e => { this.showErrorNotification('An error occured, try again later') })
         .then(() => { this.loading = false })
     },
     deleteItem(id) {
-      this.loading = true
-      backend.$removeMedic(id).then(r => {
-        this.loadItems()
-      }).catch(e => { alert('An error occured, try again later') })
-        .then(() => { this.loading = false })
+      this.showConfirmationDialog('Do you want to remove this medic, it will cancel all his consultations?').then(() => {
+        this.loading = true
+        backend.$removeMedic(id).then(r => {
+          this.showSuccessNotification('Medic removed successfully')
+          this.loadItems()
+        }).catch(e => { this.showErrorNotification('An error occured, try again later') })
+          .then(() => { this.loading = false })
+      })
     },
     editItem(item) {
       this.selectedItem = item

@@ -67,15 +67,18 @@ export default {
       this.loading = true
       backend.$findInvestigationTypes().then(r => {
         this.items = r.data
-      }).catch(e => { alert('An error occured, try again later') })
+      }).catch(e => { this.showErrorNotification('An error occured, try again later') })
         .then(() => { this.loading = false })
     },
     deleteItem(id) {
-      this.loading = true
-      backend.$removeInvestigationType(id).then(r => {
-        this.loadItems()
-      }).catch(e => { alert('An error occured, try again later') })
-        .then(() => { this.loading = false })
+      this.showConfirmationDialog('Do you want to remove this investigation type?').then(() => {
+        this.loading = true
+        backend.$removeInvestigationType(id).then(r => {
+          this.showSuccessNotification('Investigation type removed successfully')
+          this.loadItems()
+        }).catch(e => { this.showErrorNotification('An error occured, try again later') })
+          .then(() => { this.loading = false })
+      })
     },
     editItem(item) {
       this.item = item
