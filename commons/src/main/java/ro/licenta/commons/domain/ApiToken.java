@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
@@ -33,10 +34,10 @@ public class ApiToken implements Serializable {
 	public static final String API_TOKEN_KEYSPACE = "api-token-keyspace";
 	
 	@Id
-	private String id;
+	private ObjectId id;
 	private String key;
 	@EqualsAndHashCode.Include
-	private String user;
+	private ObjectId user;
 	private LocalDateTime expiresAt;
 	private LocalDateTime createdAt;
 	private VapidSubscription vapidSubscription;

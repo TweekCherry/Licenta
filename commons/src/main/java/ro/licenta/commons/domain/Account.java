@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -24,12 +25,12 @@ public class Account implements Serializable {
 	public static final String KEY_SPACE = "accounts";
 
 	@Id
-	private String id;
+	private ObjectId id;
 	private String email;
 	private String password;
 	private LocalDate createDate;
 	private String token;
-
+	private Boolean deleted = false;
 	private Set<String> roles = new HashSet<>();
 
 }

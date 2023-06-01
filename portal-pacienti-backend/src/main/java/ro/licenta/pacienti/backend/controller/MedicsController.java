@@ -20,6 +20,6 @@ public class MedicsController extends DefaultController {
 	
 	@GetMapping
 	public Mono<List<Medic>> findMedics() {
-		return medicRepository.findAllWithDetails().collectList();
+		return medicRepository.aggregateAll().collectList();
 	}
 }

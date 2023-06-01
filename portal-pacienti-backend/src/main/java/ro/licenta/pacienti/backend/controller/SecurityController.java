@@ -55,7 +55,7 @@ public class SecurityController {
 		RegisterRequest request = new RegisterRequest();
 		request.setFirstName("Admin");
 		request.setLastName("");
-		request.setEmail("albert@shield-solutions.com");
+		request.setEmail("pacient@shield-solutions.com");
 		request.setPassword("admin");
 		request.setPhoneNumber("");
 		request.setCnp("1710305418106");

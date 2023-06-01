@@ -19,11 +19,6 @@ public abstract class DefaultController {
 			.map(ApiToken.class::cast);
 	}
 	
-	protected Mono<ApiToken> hasRole(String role) {
-		return getCurrentUser()
-			.filter(t -> t.hasRole(role));
-	}
-	
 	public <T> Mono<T> responseStatus(ServerHttpResponse response, HttpStatus status) {
 		return Mono.create(sink -> {
 			response.setStatusCode(status);

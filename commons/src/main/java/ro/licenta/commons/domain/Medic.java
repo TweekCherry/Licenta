@@ -3,6 +3,7 @@ package ro.licenta.commons.domain;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -21,12 +22,15 @@ public class Medic {
 	public static final String KEY_SPACE = "medics";
 	
 	@Id
-	private String id;
-	private String firstName;
-	private String lastName;
-	private String profile; // base64 image
+	private ObjectId id;
+	private String image; // base64 image
 	private String title;
-	private Grade grade;
-	private Set<Departament> departments = new HashSet<>();
-	private String clinic;
+	private String grade;
+	private Set<String> departments = new HashSet<>();
+	private ObjectId clinic;
+	private Boolean deleted = false;
+	
+	private Profile profileData;
+	private Clinic clinicData;
+	private Account accountData;
 }

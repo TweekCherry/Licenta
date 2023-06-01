@@ -3,6 +3,7 @@ package ro.licenta.commons.domain;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -22,8 +23,8 @@ public class Profile implements Serializable {
 	public static final String KEY_SPACE = "profile";
 
 	@Id
-	private String id;
-	private String user;
+	private ObjectId id;
+	private ObjectId user;
 	private String firstName;
 	private String lastName;
 	private String phoneNumber;
@@ -32,6 +33,6 @@ public class Profile implements Serializable {
 	private String gender;
 	private Long age;
 	private Address address;
-	private String subscription;
+	private Subscription subscription;
 
 }

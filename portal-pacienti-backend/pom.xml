@@ -80,7 +80,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>webapp-backend</finalName>
+		<finalName>portal-pacient-backend</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

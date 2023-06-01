@@ -9,16 +9,16 @@ import lombok.Setter;
 @NoArgsConstructor
 public class RegisterRequest {
 
-	private String firstName;
-	private String lastName;
-	private String email;
-	private String password;
-	private String phoneNumber;
-	private String cnp;
-	private String city;
-	private String county;
-	private String street;
-	private String number;
-	private String details;
+	protected String firstName;
+	protected String lastName;
+	protected String email;
+	protected String password;
+	protected String phoneNumber;
+	protected String cnp;
+	protected String city;
+	protected String county;
+	protected String street;
+	protected String number;
+	protected String details;
 	
 }

@@ -2,6 +2,7 @@ package ro.licenta.commons.domain;
 
 import java.time.LocalDateTime;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -20,15 +21,15 @@ public class Appointment {
 	public static final String KEY_SPACE = "appoiments";
 
 	@Id
-	private String id;
-	private String user;
+	private ObjectId id;
+	private ObjectId user;
 	private LocalDateTime timestmap;
-	private Medic medic;
-	private Clinic clinic;
-	private Investigation investigation;
+	private ObjectId medic;
+	private ObjectId clinic;
+	private ObjectId investigation;
 	private AppoimentStatus status = AppoimentStatus.SCHEDULED;
 	
 	public static enum AppoimentStatus {
-		SCHEDULED, IN_PROGRESS, FINISHED
+		SCHEDULED, IN_PROGRESS, FINISHED, CANCELLED
 	}
 }

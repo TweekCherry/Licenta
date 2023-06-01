@@ -14,11 +14,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Import;
 
-import ro.licenta.commons.ConsulClientAspect;
 import ro.licenta.commons.config.MongodbConfig;
 
 @EnableDiscoveryClient
-@Import({MongodbConfig.class, ConsulClientAspect.class})
+@Import({ MongodbConfig.class })
 @SpringBootApplication(scanBasePackages = {
 	"ro.licenta.commons",
 	"ro.licenta.pacienti.backend"

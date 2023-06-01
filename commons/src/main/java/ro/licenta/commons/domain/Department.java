@@ -12,8 +12,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(Departament.KEY_SPACE)
-public class Departament {
+@Document(Department.KEY_SPACE)
+public class Department {
 
 	public static final String KEY_SPACE = "departments";
 	
