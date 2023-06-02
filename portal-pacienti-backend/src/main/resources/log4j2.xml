@@ -6,7 +6,9 @@
 		</Console>
 	</Appenders>
 	<Loggers>
-		<Logger name="org.springframework.data.mongodb.core.ReactiveMongoTemplate" level="DEBUG"></Logger>
+		<Logger name="org.springframework.data.mongodb.core.ReactiveMongoTemplate" level="DEBUG">
+			<AppenderRef ref="Console" level="DEBUG"/>
+		</Logger>
 		<Logger name="org.apache.http" level="OFF"></Logger>
 		
 		<Root level="ALL">

@@ -12,6 +12,8 @@ import ro.licenta.commons.domain.Subscription;
 public interface SubscriptionRepositoryCustom {
 
 	public Mono<List<Subscription>> aggregateAll();
+
+	public Mono<Subscription> aggregateById(ObjectId id);
 	
 	public Mono<UpdateResult> unlinkInvestigation(ObjectId id);
 

@@ -18,18 +18,23 @@ import lombok.experimental.Accessors;
 @Document(Appointment.KEY_SPACE)
 public class Appointment {
 	
-	public static final String KEY_SPACE = "appoiments";
+	public static final String KEY_SPACE = "appointments";
 
 	@Id
 	private ObjectId id;
 	private ObjectId user;
-	private LocalDateTime timestmap;
+	private LocalDateTime timestamp;
 	private ObjectId medic;
 	private ObjectId clinic;
 	private ObjectId investigation;
 	private AppoimentStatus status = AppoimentStatus.SCHEDULED;
 	
+	private Profile userData;
+	private Clinic clinicData;
+	private Medic medicData;
+	private Investigation investigationData;
+	
 	public static enum AppoimentStatus {
-		SCHEDULED, IN_PROGRESS, FINISHED, CANCELLED
+		SCHEDULED, FINISHED, CANCELLED
 	}
 }

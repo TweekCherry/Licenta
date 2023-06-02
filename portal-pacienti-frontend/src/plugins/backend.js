@@ -11,14 +11,16 @@ const api = axios.create({
 })
 // global api token setup for all ajax requests
 api.interceptors.request.use(function(config) {
-  config.headers.Authorization = store.state.apiToken.key
+  if (store.state.apiToken !== null) {
+    config.headers.Authorization = store.state.apiToken.key
+  }
   return config
 })
 // global setup for logout, in case the api token expires during an ajax request
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if ((error.response && error.response.status === 401) && store.getters.apiToken != null) { // if token expired or server responds with status 401
+    if ((error.response && error.response.status === 401) && store.state.apiToken != null) { // if token expired or server responds with status 401
       store.dispatch('logout') // trigger logout
     }
     return Promise.reject(error)
@@ -70,7 +72,48 @@ export default {
   $updateUserProfile: function(profile) {
     return api.post('/account/profile', profile)
   },
+
+  $findSubscriptions: function() {
+    return api.get('/subscriptions')
+  },
+  $registerSubscription: function(id, months) {
+    return api.put(`/subscriptions/subscribe/${id}`, null, {
+      params: {
+        months: months
+      }
+    })
+  },
+
+  $findClinics: function() {
+    return api.get('/clinic')
+  },
   $findMedics: function() {
     return api.get('/medics')
+  },
+  $findMedicsByClinic: function(clinic) {
+    return api.get(`/medics/clinic/${clinic}`)
+  },
+  $findInvestigationsByClinic: function(clinic) {
+    return api.get(`/investigations/clinic/${clinic}`)
+  },
+  $findDepartments: function() {
+    return api.get('/departments')
+  },
+  $findAppointments: function() {
+    return api.get('/appointments')
+  },
+  $deleteAppointment: function(id) {
+    return api.delete(`/appointments/${id}`)
+  },
+  $saveAppointment: function(appointment) {
+    return api.post('/appointments', appointment)
+  },
+  $findBookedAppointmentDates: function(clinic, medic) {
+    return api.get('/appointments/check-dates', {
+      params: {
+        clinic: clinic,
+        medic: medic
+      }
+    })
   }
 }

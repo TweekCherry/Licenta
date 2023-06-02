@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import LocalStorage from '@/plugins/local-storage.js'
+import router from '../router'
 
 Vue.use(Vuex)
 
@@ -31,6 +32,10 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    logout() {
+      this.commit('logout')
+      router.push({ name: 'Login' })
+    }
   },
   modules: {
   }

@@ -1,0 +1,25 @@
+.h-100 {
+  height: 100% !important;
+}
+.h-auto {
+  height: auto !important;
+}
+.w-100 {
+  width: 100% !important;
+}
+.no-radius-top-right {
+  border-top-right-radius: 0;
+}
+.no-radius-top-left {
+  border-top-left-radius: 0;
+}
+.z-index-100 {
+  z-index: 100 !important;
+}
+.absolute-center {
+  position: absolute;
+  top: 50%;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}

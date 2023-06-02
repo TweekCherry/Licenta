@@ -25,7 +25,7 @@
         hide-default-footer>
         <template v-slot:[`item.image`]="{ item }" >
           <div class="d-flex justify-start align-center py-2">
-            <img :src="item.image" style="width: 64px;" />
+            <img :src="item.image" width="64" height="64" />
           </div>
         </template>
         <template v-slot:[`item.profile`]="{ item }" >
@@ -92,6 +92,7 @@ export default {
       headers: [
         { text: 'Profile', align: 'left', sortable: true, value: 'image' },
         { text: 'Name', align: 'left', sortable: true, value: 'profile' },
+        { text: 'Titlu', align: 'left', sortable: true, value: 'title' },
         { text: 'Grade', align: 'left', sortable: true, value: 'grade' },
         { text: 'Departments', align: 'left', sortable: true, value: 'departments' },
         { text: 'Clinic', align: 'left', sortable: true, value: 'clinic' },

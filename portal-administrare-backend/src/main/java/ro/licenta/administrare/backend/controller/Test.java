@@ -1,62 +1,74 @@
-//package ro.licenta.administrare.backend.controller;
-//
-//import java.io.File;
-//import java.time.LocalDate;
-//import java.util.Arrays;
-//import java.util.List;
-//import java.util.concurrent.atomic.AtomicInteger;
-//
-//import org.bson.Document;
-//import org.bson.types.ObjectId;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
-//import org.springframework.security.crypto.password.PasswordEncoder;
-//import org.springframework.stereotype.Component;
-//
-//import com.fasterxml.jackson.core.type.TypeReference;
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//
-//import reactor.core.publisher.Flux;
-//import reactor.core.publisher.Mono;
-//import ro.licenta.commons.domain.Account;
-//import ro.licenta.commons.domain.Department;
-//import ro.licenta.commons.domain.Investigation;
-//import ro.licenta.commons.domain.InvestigationType;
-//import ro.licenta.commons.domain.Medic;
-//import ro.licenta.commons.domain.Profile;
-//import ro.licenta.commons.domain.Roles;
-//import ro.licenta.commons.repository.AccountRepository;
-//import ro.licenta.commons.repository.DepartmentRepository;
-//import ro.licenta.commons.repository.InvestigationRepository;
-//import ro.licenta.commons.repository.InvestigationTypeRepository;
-//import ro.licenta.commons.repository.MedicRepository;
-//import ro.licenta.commons.repository.ProfileRepository;
-//
-//@Component
-//public class Test {
-//
-//	@Autowired
-//	private ReactiveMongoTemplate mongodb;
-//	
-//	@Autowired
-//	private ObjectMapper objectMapper;
-//	@Autowired
-//	private InvestigationRepository investigationRepository;
-//	@Autowired
-//	private InvestigationTypeRepository investigationTypeRepository;
-//	@Autowired
-//	private DepartmentRepository departmentRepository;
-//	@Autowired
-//	private AccountRepository accountRepository;
-//	@Autowired
-//	private MedicRepository medicRepository;
-//	@Autowired
-//	private ProfileRepository profileRepository;
-//	@Autowired
-//	private PasswordEncoder passwordEncoder;
-//	
-////	@PostConstruct
-//	public void postConstruct() throws Exception {
+package ro.licenta.administrare.backend.controller;
+
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import reactor.core.publisher.Flux;
+import ro.licenta.commons.domain.Roles;
+import ro.licenta.commons.repository.AccountRepository;
+import ro.licenta.commons.repository.ClinicRepository;
+import ro.licenta.commons.repository.DepartmentRepository;
+import ro.licenta.commons.repository.InvestigationRepository;
+import ro.licenta.commons.repository.InvestigationTypeRepository;
+import ro.licenta.commons.repository.MedicRepository;
+import ro.licenta.commons.repository.ProfileRepository;
+
+@Component
+public class Test {
+
+	@Autowired
+	private ReactiveMongoTemplate mongodb;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
+	@Autowired
+	private InvestigationRepository investigationRepository;
+	@Autowired
+	private InvestigationTypeRepository investigationTypeRepository;
+	@Autowired
+	private DepartmentRepository departmentRepository;
+	@Autowired
+	private AccountRepository accountRepository;
+	@Autowired
+	private MedicRepository medicRepository;
+	@Autowired
+	private ProfileRepository profileRepository;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	@Autowired
+	private ClinicRepository clinicRepository;
+	
+//	@PostConstruct
+	public void postConstruct() throws Exception {
+		accountRepository.findAll()
+			.filter(a -> a.getRoles().contains(Roles.ROLE_MEDIC))
+			.collectList()
+			.map(accounts -> {
+				return IntStream.range(0, accounts.size()).mapToObj(i -> {
+					return accounts.get(i).setEmail("medic"+i+"@test.com");
+				}).collect(Collectors.toList());
+			}).flatMapMany(Flux::fromIterable)
+			.flatMap(accountRepository::save)
+			.subscribe();
+		
+//		clinicRepository.findAll().collectList().flatMapMany(clinics -> {
+//			Random random = new Random();
+//			return medicRepository.findAll()
+//				.flatMap(medic -> {
+//					int index = random.nextInt(0, clinics.size());
+//					medic.setClinic(clinics.get(index).getId());
+//					return medicRepository.save(medic);
+//				});
+//		}).subscribe();
 //		List<Document> medics = objectMapper.readerFor(new TypeReference<List<Document>>() { }).readValue(new File("D:\\logs\\new2.json"));
 //		AtomicInteger integer = new AtomicInteger(0);
 //		String password = passwordEncoder.encode("admin");
@@ -124,5 +136,5 @@
 //				
 //				return Mono.when(investigationSaveRequest, investigationTypeRequest, departmentSaveRequest);
 //			}).subscribe();
-//	}
-//}
+	}
+}

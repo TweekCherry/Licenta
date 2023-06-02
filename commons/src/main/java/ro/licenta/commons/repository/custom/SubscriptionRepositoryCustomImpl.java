@@ -26,17 +26,18 @@ public class SubscriptionRepositoryCustomImpl implements SubscriptionRepositoryC
 
 	@Override
 	public Mono<List<Subscription>> aggregateAll() {
-		ReactiveMap<ObjectId, Investigation> investigations = new ReactiveMap<>(key -> mongodb.findById(key, Investigation.class));
 		
 		return mongodb.findAll(Subscription.class)// find all subscriptions
-			.flatMap(subscription -> {
-				return Flux.fromIterable(subscription.getBenefits()) // for each benefit
-					.flatMap(benefit -> investigations.find(benefit.getInvestigation())// find the investigation and cache it
-					.map(i -> benefit.setInvestigationData(i))) // set the investigation data on the benefit
-					.then(Mono.just(subscription)); // then return the initial subscription
-			}).collectList(); // collect everything in a list
+			.flatMap(this::linkBenefits)
+			.collectList(); // collect everything in a list
 	}
 
+	@Override
+	public Mono<Subscription> aggregateById(ObjectId id) {
+		return mongodb.findById(id, Subscription.class)
+			.flatMap(this::linkBenefits);
+	}
+	
 	@Override
 	public Mono<UpdateResult> unlinkInvestigation(ObjectId id) {
 		Query query = new Query();
@@ -47,5 +48,13 @@ public class SubscriptionRepositoryCustomImpl implements SubscriptionRepositoryC
 		
 		return mongodb.updateMulti(query, update, Subscription.class);
 	}
-
+	
+	
+	private Mono<Subscription> linkBenefits(Subscription subscription) {
+		ReactiveMap<ObjectId, Investigation> investigations = new ReactiveMap<>(key -> mongodb.findById(key, Investigation.class));
+		return Flux.fromIterable(subscription.getBenefits()) // for each benefit
+			.flatMap(benefit -> investigations.find(benefit.getInvestigation())// find the investigation and cache it
+			.map(i -> benefit.setInvestigationData(i))) // set the investigation data on the benefit
+			.then(Mono.just(subscription)); // then return the initial subscription
+	}
 }

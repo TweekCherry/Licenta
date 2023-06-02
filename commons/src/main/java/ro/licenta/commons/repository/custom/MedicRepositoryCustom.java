@@ -11,6 +11,8 @@ import ro.licenta.commons.domain.Medic;
 public interface MedicRepositoryCustom {
 
 	public Flux<Medic> aggregateAll();
+	
+	public Flux<Medic> aggregateAllByClinic(ObjectId clinic);
 
 	public Mono<UpdateResult> unlinkClinic(ObjectId id);
 	

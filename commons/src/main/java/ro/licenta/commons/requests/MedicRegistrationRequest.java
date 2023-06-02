@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import org.bson.types.ObjectId;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,11 +37,10 @@ public class MedicRegistrationRequest {
 		return profile;
 	}
 	
-	public Account getAccount(PasswordEncoder encoder) {
+	public Account getAccount() {
 		account.setId(this.id);
 		account.setCreateDate(LocalDate.now());
 		account.setToken(UUID.randomUUID().toString());
-		account.setPassword(encoder.encode(this.password));
 		account.getRoles().add(Roles.ROLE_MEDIC);
 		return account;
 	}

@@ -20,7 +20,7 @@ api.interceptors.request.use(function(config) {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if ((error.response && error.response.status === 401) && store.getters.apiToken != null) { // if token expired or server responds with status 401
+    if ((error.response && error.response.status === 401) && store.state.apiToken != null) { // if token expired or server responds with status 401
       store.dispatch('logout') // trigger logout
     }
     return Promise.reject(error)

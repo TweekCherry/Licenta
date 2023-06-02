@@ -9,8 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.annotation.PostConstruct;
-
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import lombok.extern.log4j.Log4j2;
 import reactor.core.publisher.Mono;
 import ro.licenta.commons.domain.Account;
 import ro.licenta.commons.domain.Address;
@@ -35,7 +33,6 @@ import ro.licenta.commons.requests.ForgotPasswordRequest;
 import ro.licenta.commons.requests.RegisterRequest;
 import ro.licenta.commons.service.MailService;
 
-@Log4j2
 @RestController
 public class SecurityController {
 
@@ -49,26 +46,6 @@ public class SecurityController {
 	private PasswordEncoder passwordEncoder;
 	@Autowired
 	private MailService mailService;
-	
-	@PostConstruct
-	public void postConstruct() {
-		RegisterRequest request = new RegisterRequest();
-		request.setFirstName("Admin");
-		request.setLastName("");
-		request.setEmail("pacient@shield-solutions.com");
-		request.setPassword("admin");
-		request.setPhoneNumber("");
-		request.setCnp("1710305418106");
-		request.setCity("");
-		request.setCounty("");
-		request.setStreet("");
-		request.setNumber("");
-		request.setDetails("");
-		this.register("ADMIN_ACCOUNT", request)
-			.onErrorContinue((e, o) -> log.warn("Administrator account already created"))
-			.doOnSuccess(v -> log.info("Administrator account created, check email"))
-			.subscribe();
-	}
 	
 	@PostMapping("/login")
 	public Mono<ApiToken> login(@RequestBody BasicAuthenticationRequest loginRequest) {
@@ -97,49 +74,54 @@ public class SecurityController {
 			.filter(exists -> !exists)
 			.switchIfEmpty(Mono.error(new IllegalArgumentException("Email already exists")))
 			.flatMap(r -> {
+				ObjectId id = new ObjectId();
 				Account account = new Account();
+				account.setId(id);
 				account.setEmail(registerRequest.getEmail());
 				account.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
 				account.setCreateDate(LocalDate.now());
 				account.setToken(UUID.randomUUID().toString());
 				account.getRoles().add(Roles.ROLE_CLIENT);
-				return accountRepository.save(account).flatMap(a -> { // save account then
-					Profile profile = new Profile();
-					profile.setUser(a.getId());
-					profile.setFirstName(registerRequest.getFirstName());
-					profile.setLastName(registerRequest.getLastName());
-					profile.setPhoneNumber(registerRequest.getPhoneNumber());
-					
-					String male = "135";
-					String female = "246";
-					if (male.contains("" + registerRequest.getCnp().charAt(0))) {
-						profile.setGender("Male");
-					} else if (female.contains("" + registerRequest.getCnp().charAt(0))) {
-						profile.setGender("Female");
-					}
-					
-					LocalDate dateOfBirth = LocalDate.of(
-						Integer.parseInt(registerRequest.getCnp().substring(1, 3)), // year
-						Integer.parseInt(registerRequest.getCnp().substring(3, 5)), // month
-						Integer.parseInt(registerRequest.getCnp().substring(5, 7)) // day
-					);
-					long age = ChronoUnit.YEARS.between(dateOfBirth, LocalDate.now());
-					profile.setAge(age);
-					profile.setDateOfBirth(dateOfBirth);
-					profile.setCnp(registerRequest.getCnp());
-					profile.setAddress(new Address());
-					profile.getAddress().setCity(registerRequest.getCity());
-					profile.getAddress().setCounty(registerRequest.getCounty());
-					profile.getAddress().setStreet(registerRequest.getStreet());
-					profile.getAddress().setNumber(registerRequest.getNumber());
-					profile.getAddress().setDetails(registerRequest.getDetails());
-					return profileRepository.save(profile).then(Mono.defer(() -> { // save profile then
-						Map<String, String> content = new HashMap<>();
-						content.put("firstName", profile.getFirstName());
-						content.put("url", redirectUrl+"?token="+account.getToken());
-						return mailService.sendEmail(a.getEmail(), "Registration", "register.html", content); // send registration email
-					}));
-				});
+				
+				Profile profile = new Profile();
+				profile.setId(id);
+				profile.setUser(id);
+				profile.setFirstName(registerRequest.getFirstName());
+				profile.setLastName(registerRequest.getLastName());
+				profile.setPhoneNumber(registerRequest.getPhoneNumber());
+				
+				String male = "135";
+				String female = "246";
+				if (male.contains("" + registerRequest.getCnp().charAt(0))) {
+					profile.setGender("Male");
+				} else if (female.contains("" + registerRequest.getCnp().charAt(0))) {
+					profile.setGender("Female");
+				}
+				
+				LocalDate dateOfBirth = LocalDate.of(
+					Integer.parseInt(registerRequest.getCnp().substring(1, 3)), // year
+					Integer.parseInt(registerRequest.getCnp().substring(3, 5)), // month
+					Integer.parseInt(registerRequest.getCnp().substring(5, 7)) // day
+				);
+				long age = ChronoUnit.YEARS.between(dateOfBirth, LocalDate.now());
+				profile.setAge(age);
+				profile.setDateOfBirth(dateOfBirth);
+				profile.setCnp(registerRequest.getCnp());
+				profile.setAddress(new Address());
+				profile.getAddress().setCity(registerRequest.getCity());
+				profile.getAddress().setCounty(registerRequest.getCounty());
+				profile.getAddress().setStreet(registerRequest.getStreet());
+				profile.getAddress().setNumber(registerRequest.getNumber());
+				profile.getAddress().setDetails(registerRequest.getDetails());
+				return Mono.when(
+					profileRepository.save(profile),
+					accountRepository.save(account)
+				).then(Mono.defer(() -> { // save profile then
+					Map<String, String> content = new HashMap<>();
+					content.put("firstName", profile.getFirstName());
+					content.put("url", redirectUrl+"?token="+account.getToken());
+					return mailService.sendEmail(account.getEmail(), "Registration", "register.html", content); // send registration email
+				}));
 			});
 	}
 	

@@ -50,11 +50,12 @@ public class MedicsController extends DefaultController {
 	@PostMapping
 	public Mono<Medic> save(@RequestBody MedicRegistrationRequest request) {
 		request.setId(new ObjectId()); // we share the id between medic, profile and account
+		request.getAccount().setPassword(passwordEncoder.encode(request.getPassword()));
 		return accountRepository.existsByEmail(request.getAccount().getEmail())
 			.filter(exists -> exists)
 			.flatMap(e -> Mono.error(new IllegalArgumentException("Email already exists")))
 			.then(Mono.defer(() -> Mono.zip(
-				accountRepository.save(request.getAccount(passwordEncoder)),
+				accountRepository.save(request.getAccount()),
 				profileRepository.save(request.getProfile()),
 				medicRepository.save(request.getMedic())
 			))).map(Tuple3::getT3);
