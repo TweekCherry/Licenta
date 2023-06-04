@@ -9,7 +9,6 @@ import org.springframework.security.web.server.authentication.logout.ServerLogou
 import org.springframework.stereotype.Component;
 
 import reactor.core.publisher.Mono;
-import ro.licenta.commons.config.notifications.VapidSessionRegistry;
 import ro.licenta.commons.domain.ApiToken;
 import ro.licenta.commons.repository.ApiTokenRepository;
 
@@ -18,8 +17,6 @@ public class DefaultReactiveServerLogoutSuccessHandler implements ServerLogoutSu
 
 	@Autowired
 	private ApiTokenRepository apiTokenRepository;
-//	@Autowired(required = false)
-//	protected VapidSessionRegistry vapidSessionRegistry;
 	
 	/** 
 	 * (non-Javadoc)
@@ -29,12 +26,6 @@ public class DefaultReactiveServerLogoutSuccessHandler implements ServerLogoutSu
 	public Mono<Void> onLogoutSuccess(WebFilterExchange exchange, Authentication authentication) {
 		if (authentication.getPrincipal() instanceof ApiToken) {
 			ApiToken apiToken = (ApiToken) authentication.getPrincipal();
-//			if (vapidSessionRegistry != null) {
-//				vapidSessionRegistry.removeSession(apiToken).flatMap(s->{
-//					s.cancelSubscription(apiToken.getKey());
-//					return Mono.empty();
-//				}).subscribe();
-//			}
 			
 			return apiTokenRepository.deleteByKey(apiToken.getKey())
 				.then(Mono.fromRunnable(() -> {

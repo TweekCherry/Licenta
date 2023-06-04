@@ -4,6 +4,8 @@ import { v4 as randomUUID } from 'uuid'
 import vuetify from './plugins/vuetify'
 import GenericPrompt from '@/pages/generic/GenericPrompt.vue'
 import GenericNotification from '@/pages/generic/GenericNotification.vue'
+import store from './store'
+import { DateTime } from 'luxon'
 
 Vue.mixin({
   methods: {
@@ -91,6 +93,44 @@ Vue.mixin({
         validationRules: rules
       }
       return this.showDialog(config)
+    },
+    downloadFile(fileName, dataBlob) {
+      var fileURL = window.URL.createObjectURL(dataBlob)
+      var fileLink = document.createElement('a')
+
+      fileLink.href = fileURL
+      fileLink.setAttribute('download', fileName)
+      document.body.appendChild(fileLink)
+
+      fileLink.click()
+      fileLink.remove()
+    },
+    computeInvestigationPrice(investigation) {
+      if (store.state.profile.subscription !== null) {
+        const benefit = store.state.profile.subscription.benefits.find(benefit => benefit.investigation === investigation.id)
+        if (benefit !== undefined) {
+          return investigation.price - (investigation.price * benefit.discount / 100)
+        }
+      }
+      return investigation.price
+    },
+    isReduced(investigation) {
+      if (store.state.profile.subscription !== null) {
+        const benefit = store.state.profile.subscription.benefits.find(benefit => benefit.investigation === investigation.id)
+        if (benefit !== undefined) {
+          return benefit.discount > 0
+        }
+      }
+      return false
+    },
+    getNewAppointmentTimestamp() {
+      let timestamp = DateTime.now().set({ minute: 0 })// take the current date
+      if (timestamp.hour < 8) { // if the current hour it's outside of the work programs
+        timestamp = timestamp.set({ hour: 8 }) // work program starts at 8:00
+      } else if (timestamp.hour >= 19) { // work program ends at 20:00(last appointment)
+        timestamp = timestamp.set({ hour: 8 }).plus({ days: 1 }) // set hour to 8:00 and increase day by 1h
+      }
+      return timestamp.setZone('utc', { keepLocalTime: true }).toISO()
     }
   }
 })

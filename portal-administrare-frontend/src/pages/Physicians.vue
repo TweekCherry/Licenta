@@ -70,7 +70,8 @@ export default {
             i.profileData.lastName.toUpperCase().includes(this.searchValue.toUpperCase()) ||
            i.departments.find(d => d.toUpperCase().includes(this.searchValue.toUpperCase())) !== undefined ||
            i.title.toUpperCase().includes(this.searchValue.toUpperCase()) ||
-           i.grade.toUpperCase().includes(this.searchValue.toUpperCase())
+           i.grade.toUpperCase().includes(this.searchValue.toUpperCase()) ||
+           i.accountData.email.toUpperCase().includes(this.searchValue.toUpperCase())
       })
     }
   },

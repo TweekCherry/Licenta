@@ -30,17 +30,17 @@ const routes = [
         }
       },
       {
-        path: '/consultations',
-        name: 'Consultations',
-        component: () => import('@/pages/Consultations.vue'),
+        path: '/history',
+        name: 'Medical file',
+        component: () => import('@/pages/MedicalFile.vue'),
         meta: {
           authenticationRequired: true
         }
       },
       {
-        path: '/analysis',
-        name: 'Analysis',
-        component: () => import('@/pages/Analysis.vue'),
+        path: '/investigations',
+        name: 'Investigations',
+        component: () => import('@/pages/Investigations.vue'),
         meta: {
           authenticationRequired: true
         }
@@ -68,11 +68,6 @@ const routes = [
         meta: {
           authenticationRequired: true
         }
-      },
-      {
-        path: '/contact',
-        name: 'Contact',
-        component: () => import('@/pages/Contact.vue')
       }
     ]
   },

@@ -20,7 +20,7 @@ api.interceptors.request.use(function(config) {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if ((error.response && error.response.status === 403) && store.state.apiToken != null) { // if token expired or server responds with status 401
+    if ((error.response && error.response.status === 401) && store.state.apiToken != null) { // if token expired or server responds with status 401
       store.dispatch('logout') // trigger logout
     }
     return Promise.reject(error)
@@ -55,7 +55,34 @@ export default {
   $findUserProfile: function() {
     return api.get('/account/profile')
   },
-  $findAppointments: function() {
-    return api.get('/appointments')
+  $findMedicProfile: function() {
+    return api.get('/account/medic')
+  },
+  $findAppointments: function(onlyScheduled) {
+    return api.get('/appointments', {
+      params: {
+        onlyScheduled: onlyScheduled
+      }
+    })
+  },
+  $cancelAppointment: function(id) {
+    return api.put(`/appointments/${id}`)
+  },
+  $startAppointment: function(id) {
+    return api.post(`/appointments/${id}`)
+  },
+  $findConsultations: function() {
+    return api.get('/consultations')
+  },
+  $findActiveConsultations: function() {
+    return api.get('/consultations/active')
+  },
+  $finishConsultation: function(consultation) {
+    return api.post('/consultations', consultation)
+  },
+  $eventStream: function() {
+    return api.get('/events', {
+      responseType: 'stream'
+    })
   }
 }

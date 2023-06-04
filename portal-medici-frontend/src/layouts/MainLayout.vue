@@ -5,7 +5,7 @@
     <!-- Sizes your content based upon application components -->
     <v-main>
       <!-- Provides the application the proper gutter -->
-      <v-container fluid>
+      <v-container fluid class="h-100">
         <!-- If using vue-router -->
         <router-view></router-view>
       </v-container>
@@ -30,8 +30,15 @@ export default {
     }
   },
   beforeRouteEnter(to, from, next) {
-    return backend.$findUserProfile().then(r => {
-      store.commit('userProfile', r.data)
+    const request = Promise.all([
+      backend.$findMedicProfile(),
+      backend.$findUserProfile(),
+      backend.$findActiveConsultations()
+    ])
+    return request.then(r => {
+      store.commit('medicProfile', r[0].data)
+      store.commit('userProfile', r[1].data)
+      store.commit('activeConsultation', r[2].data)
     }).catch(e => { console.log(e) })
       .then(() => next())
   },

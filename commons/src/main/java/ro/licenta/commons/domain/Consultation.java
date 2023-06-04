@@ -1,7 +1,5 @@
 package ro.licenta.commons.domain;
 
-import java.time.LocalDate;
-
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -22,10 +20,8 @@ public class Consultation {
 
 	@Id
 	private ObjectId id;
-	private ObjectId user;
-	private LocalDate date;
-	private ObjectId clinic;
-	private ObjectId medic;
 	private String diagnostic;
+	private Appointment appointment;
 	private Prescription prescription;
+	
 }

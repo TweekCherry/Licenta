@@ -4,6 +4,7 @@ import { v4 as randomUUID } from 'uuid'
 import vuetify from './plugins/vuetify'
 import GenericPrompt from '@/pages/generic/GenericPrompt.vue'
 import GenericNotification from '@/pages/generic/GenericNotification.vue'
+import store from './store'
 
 Vue.mixin({
   methods: {
@@ -79,6 +80,24 @@ Vue.mixin({
         type: 'success'
       }
       return this.showNotification(config)
+    },
+    computeInvestigationPrice(investigation) {
+      if (store.state.profile.subscription !== null) {
+        const benefit = store.state.profile.subscription.benefits.find(benefit => benefit.investigation === investigation.id)
+        if (benefit !== undefined) {
+          return investigation.price - (investigation.price * benefit.discount / 100)
+        }
+      }
+      return investigation.price
+    },
+    isReduced(investigation) {
+      if (store.state.profile.subscription !== null) {
+        const benefit = store.state.profile.subscription.benefits.find(benefit => benefit.investigation === investigation.id)
+        if (benefit !== undefined) {
+          return benefit.discount > 0
+        }
+      }
+      return false
     }
   }
 })

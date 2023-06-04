@@ -27,14 +27,14 @@ public class Appointment {
 	private ObjectId medic;
 	private ObjectId clinic;
 	private ObjectId investigation;
-	private AppoimentStatus status = AppoimentStatus.SCHEDULED;
+	private AppointmentStatus status = AppointmentStatus.SCHEDULED;
 	
 	private Profile userData;
 	private Clinic clinicData;
 	private Medic medicData;
 	private Investigation investigationData;
 	
-	public static enum AppoimentStatus {
-		SCHEDULED, FINISHED, CANCELLED
+	public static enum AppointmentStatus {
+		SCHEDULED, FINISHED, CANCELLED, NOT_PRESENTED, IN_PROGRESS
 	}
 }

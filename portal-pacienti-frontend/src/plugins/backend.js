@@ -83,24 +83,12 @@ export default {
       }
     })
   },
-
-  $findClinics: function() {
-    return api.get('/clinic')
-  },
-  $findMedics: function() {
-    return api.get('/medics')
-  },
-  $findMedicsByClinic: function(clinic) {
-    return api.get(`/medics/clinic/${clinic}`)
-  },
-  $findInvestigationsByClinic: function(clinic) {
-    return api.get(`/investigations/clinic/${clinic}`)
-  },
-  $findDepartments: function() {
-    return api.get('/departments')
-  },
-  $findAppointments: function() {
-    return api.get('/appointments')
+  $findAppointments: function(onlyScheduled) {
+    return api.get('/appointments', {
+      params: {
+        onlyScheduled: onlyScheduled
+      }
+    })
   },
   $deleteAppointment: function(id) {
     return api.delete(`/appointments/${id}`)
@@ -108,12 +96,46 @@ export default {
   $saveAppointment: function(appointment) {
     return api.post('/appointments', appointment)
   },
-  $findBookedAppointmentDates: function(clinic, medic) {
+  $findDepartments: function() {
+    return api.get('/departments')
+  },
+  $findClinics: function() {
+    return api.get('/clinic')
+  },
+  $findClinicsByInvestigation: function(id) {
+    return api.get(`/clinic/investigations/${id}`)
+  },
+  $findMedicsByClinic: function(clinic) {
+    return api.get(`/medics/clinic/${clinic}`)
+  },
+  $findInvestigationsByClinic: function(clinic) {
+    return api.get(`/investigations/clinic/${clinic}`)
+  },
+  $findBookedAppointmentDates: function(clinic, medic, id) {
     return api.get('/appointments/check-dates', {
       params: {
         clinic: clinic,
-        medic: medic
+        medic: medic,
+        id: id
       }
+    })
+  },
+
+  $findInvestigations: function() {
+    return api.get('/investigations')
+  },
+
+  $findMedics: function() {
+    return api.get('/medics')
+  },
+
+  $findConsultations: function() {
+    return api.get('/consultations')
+  },
+
+  $downloadConsultation: function(id) {
+    return api.get(`/consultations/${id}`, {
+      responseType: 'blob'
     })
   }
 }

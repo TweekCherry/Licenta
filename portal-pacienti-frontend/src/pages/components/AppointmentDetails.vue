@@ -19,7 +19,7 @@
               <div class="col-12">
                 <ValidationProvider rules="required" name="Department" v-slot="{ errors, valid }">
                   <v-autocomplete
-                    v-model="department" :items="avaialbleDepartments" dense label="Department" :error-messages="errors" :success="valid" item-text="name" item-value="name">
+                    v-model="department" :items="avaialbleDepartments" dense label="Department" :error-messages="errors" :success="valid" item-text="name" item-value="name" @change="onDepartmentChange">
                   </v-autocomplete>
                 </ValidationProvider>
               </div>
@@ -30,13 +30,13 @@
                     :items="availableClinics" dense label="Clinic"
                     :error-messages="errors"
                     :success="valid" item-text="name" item-value="id"
-                    @change="loadData">
+                    @change="onClinicChange">
                   </v-autocomplete>
                 </ValidationProvider>
               </div>
               <div class="col-12" v-if="appointmentData.clinic !== null">
                 <ValidationProvider rules="required" name="Clinics" v-slot="{ errors, valid }">
-                  <v-autocomplete v-model="appointmentData.medic" :items="filteredMedics" dense label="Medic" :error-messages="errors" :success="valid" item-text="profileData.firstName" item-value="id" @change="checkForBookedDates">
+                  <v-autocomplete v-model="appointmentData.medic" :items="filteredMedics" dense label="Medic" :error-messages="errors" :success="valid" item-text="profileData.firstName" item-value="id" @change="onMedicChange">
                     <template v-slot:[`item`]="{ item }" >
                       <div class="d-flex align-center py-2">
                         <img :src="item.image" width="64" height="64"/>
@@ -85,7 +85,7 @@
             </div>
             <div class="row" v-if="appointmentData.medic !== null && appointmentData.investigation !== null">
               <div class="col-12">
-                <v-date-picker v-model="date" :min="minDate" :allowed-dates="itsValidDate" full-width class="mt-4"></v-date-picker>
+                <v-date-picker v-model="date" :min="minDate" :allowed-dates="itsValidDate" full-width class="mt-4" @change="hour = null"></v-date-picker>
               </div>
               <div class="col-12">
                 <ValidationProvider rules="required" name="Hour" v-slot="{ errors }">
@@ -144,7 +144,7 @@ export default {
       }
       return this.availableInvestigations
     },
-    bookedTimestamps() {
+    bookedTimestamps() { // merge appointment dates from current user with appointment dates from selected medic(those are booked, so not available for new appointments)
       const timestmaps = new Map()
       this.currentAppointmentTimestamps.forEach((value, key) => {
         let hours = timestmaps.get(key)
@@ -164,7 +164,7 @@ export default {
       })
       return timestmaps
     },
-    bookedHours() { // store the hours that's already booked
+    bookedHours() { // store the hours that are already booked
       const bookedHours = this.bookedTimestamps.get(this.date)
       if (bookedHours !== undefined) {
         return bookedHours
@@ -173,8 +173,13 @@ export default {
     },
     availableHours() {
       const hours = []
+      // const currentHour = this.now.hour
       this.hours.forEach(hour => {
-        hours.push({ ...hour, disabled: this.bookedHours.has(hour.value) })
+        const disabled = this.bookedHours.has(hour.value)
+        // if (!disabled) {
+        //   disabled = hour.data <= currentHour
+        // }
+        hours.push({ ...hour, disabled: disabled })
       })
       return hours
     },
@@ -186,6 +191,7 @@ export default {
     return {
       department: null,
       hour: null,
+      now: DateTime.now(),
       date: DateTime.now().toISODate(),
       minDate: DateTime.now().toISODate(),
       loading: false,
@@ -194,26 +200,30 @@ export default {
       availableMedics: [],
       availableInvestigations: [],
       avaialbleDepartments: [],
-      currentAppointmentTimestamps: new Map(),
-      currentMedicTimestamps: new Map(),
+      currentAppointmentTimestamps: new Map(), // appointment dates from this user
+      currentMedicTimestamps: new Map(), // appointment dates from the selected medic
       hours: [
-        { value: '08:00', disabled: false },
-        { value: '09:00', disabled: false },
-        { value: '10:00', disabled: false },
-        { value: '11:00', disabled: false },
-        { value: '12:00', disabled: false },
-        { value: '13:00', disabled: false },
-        { value: '14:00', disabled: false },
-        { value: '15:00', disabled: false },
-        { value: '16:00', disabled: false },
-        { value: '17:00', disabled: false },
-        { value: '18:00', disabled: false },
-        { value: '19:00', disabled: false }
+        { value: '08:00', disabled: false, data: 8 },
+        { value: '09:00', disabled: false, data: 9 },
+        { value: '10:00', disabled: false, data: 10 },
+        { value: '11:00', disabled: false, data: 11 },
+        { value: '12:00', disabled: false, data: 12 },
+        { value: '13:00', disabled: false, data: 13 },
+        { value: '14:00', disabled: false, data: 14 },
+        { value: '15:00', disabled: false, data: 15 },
+        { value: '16:00', disabled: false, data: 16 },
+        { value: '17:00', disabled: false, data: 17 },
+        { value: '18:00', disabled: false, data: 18 },
+        { value: '19:00', disabled: false, data: 19 }
       ]
     }
   },
   methods: {
     saveAppointment() {
+      if (this.bookedHours.has(this.hour)) {
+        this.showErrorNotification('Please choose a valid hour')
+        return
+      }
       this.loading = true
       this.appointmentData.timestamp = this.selectedTimestamp
       backend.$saveAppointment(this.appointmentData).then(r => {
@@ -234,44 +244,46 @@ export default {
       }).catch(e => { this.showErrorNotification('An error occured, try again later') })
     },
     loadAvailableMedics() {
-      return backend.$findMedicsByClinic(this.appointmentData.clinic).then(r => {
-        this.availableMedics = r.data
-      }).catch(e => { this.showErrorNotification('An error occured, try again later') })
+      if (this.appointmentData.clinic !== null) {
+        return backend.$findMedicsByClinic(this.appointmentData.clinic).then(r => {
+          this.availableMedics = r.data
+        }).catch(e => { this.showErrorNotification('An error occured, try again later') })
+      }
+      return Promise.resolve()
     },
     loadAvailableInvestigations() {
-      return backend.$findInvestigationsByClinic(this.appointmentData.clinic).then(r => {
-        this.availableInvestigations = r.data
-      }).catch(e => { this.showErrorNotification('An error occured, try again later') })
+      if (this.appointmentData.clinic !== null) {
+        return backend.$findInvestigationsByClinic(this.appointmentData.clinic).then(r => {
+          this.availableInvestigations = r.data
+        }).catch(e => { this.showErrorNotification('An error occured, try again later') })
+      }
+      return Promise.resolve()
+    },
+    onDepartmentChange() {
+      this.appointmentData.medic = null
+      this.appointmentData.investigation = null
+      this.appointmentData.clinic = null
+    },
+    onClinicChange() {
+      this.appointmentData.investigation = null
+      this.appointmentData.medic = null
+      this.loadData()
+    },
+    onMedicChange() {
+      this.checkForBookedDates()
+      this.loadAvailableInvestigations()
     },
     loadData() {
       this.loadAvailableMedics()
       this.loadAvailableInvestigations()
     },
-    isReduced(investigation) {
-      if (this.$store.state.profile.subscription !== null) {
-        const benefit = this.$store.state.profile.subscription.benefits.find(benefit => benefit.investigation === investigation.id)
-        if (benefit !== undefined) {
-          return benefit.discount > 0
-        }
-      }
-      return false
-    },
-    computeInvestigationPrice(investigation) {
-      if (this.$store.state.profile.subscription !== null) {
-        const benefit = this.$store.state.profile.subscription.benefits.find(benefit => benefit.investigation === investigation.id)
-        if (benefit !== undefined) {
-          return investigation.price - (investigation.price * benefit.discount / 100)
-        }
-      }
-      return investigation.price
-    },
     checkForBookedDates() {
-      if (this.appointmentData.medic != null && this.appointmentData.clinic !== null) {
-        this.loading = true
-        backend.$findBookedAppointmentDates(this.appointmentData.clinic, this.appointmentData.medic).then(r => {
+      this.loading = true
+      if (this.appointmentData.clinic !== null && this.appointmentData.medic !== null) {
+        backend.$findBookedAppointmentDates(this.appointmentData.clinic, this.appointmentData.medic, this.appointmentData.id).then(r => {
           const bookedTimestampsMap = new Map()
           r.data.forEach(d => {
-            const timestamp = DateTime.fromISO(d)
+            const timestamp = DateTime.fromISO(d, { zone: 'utc' })
             const date = timestamp.toISODate() // get the date part of this timestmap
             let times = bookedTimestampsMap.get(date) // get the set with the booked hours based on the date
             if (times === undefined) { // if we don't have any, then create a new set with booked hours
@@ -294,19 +306,13 @@ export default {
       return true
     },
     newAppointmentData() {
-      let timestamp = DateTime.now().set({ minute: 0 })// take the current date
-      if (timestamp.hour < 8) { // if the current hour it's outside of the work programs
-        timestamp = timestamp.set({ hour: 8 }) // work program starts at 8:00
-      } else if (timestamp.hour > 20) { // work program ends at 20:00(last appointment)
-        timestamp = timestamp.set({ hour: 8 }).plus({ days: 1 }) // set hour to 8:00 and increase day by 1h
-      }
       return {
         id: null,
         user: null,
         clinic: null,
         medic: null,
         investigation: null,
-        timestamp: timestamp.setZone('utc', { keepLocalTime: true }),
+        timestamp: this.getNewAppointmentTimestamp(),
         status: 'SCHEDULED'
       }
     }
@@ -324,31 +330,33 @@ export default {
           this.appointmentData = this.clone(this.appointment)
           this.department = this.appointment.investigationData.department
           this.loadData()
+          this.checkForBookedDates()
         }
-        const timestamp = DateTime.fromISO(this.appointmentData.timestamp)
+        const timestamp = DateTime.fromISO(this.appointmentData.timestamp, { zone: 'utc' })
         this.minDate = timestamp.toISODate()
         this.date = timestamp.toISODate()
         this.hour = timestamp.toFormat('HH:mm')
         this.loading = true
         this.currentAppointmentTimestamps = new Map()
-        this.appointments.forEach(d => {
-          const timestamp = DateTime.fromISO(d)
-          const date = timestamp.toISODate() // get the date part of this timestmap
-          let times = this.currentAppointmentTimestamps.get(date) // get the set with the booked hours based on the date
-          if (times === undefined) { // if we don't have any, then create a new set with booked hours
-            times = new Set()
-            this.currentAppointmentTimestamps.set(date, times)
-          }
-          times.add(timestamp.toFormat('HH:mm')) // push the time part to the set
-        })
+        this.appointments
+          .filter(a => a.status === 'SCHEDULED')
+          .filter(a => a.data.id !== this.appointmentData.id)
+          .map(a => DateTime.fromISO(a.data.timestamp, { zone: 'utc' }))
+          .forEach(d => {
+            const timestamp = DateTime.fromISO(d, { zone: 'utc' })
+            const date = timestamp.toISODate() // get the date part of this timestmap
+            let times = this.currentAppointmentTimestamps.get(date) // get the set with the booked hours based on the date
+            if (times === undefined) { // if we don't have any, then create a new set with booked hours
+              times = new Set()
+              this.currentAppointmentTimestamps.set(date, times)
+            }
+            times.add(timestamp.toFormat('HH:mm')) // push the time part to the set
+          })
         Promise.all([
           this.loadAvailableClinics(),
           this.loadAvailableDepartments()
         ]).then(() => { this.loading = false })
       }
-    },
-    date: function(newValue, oldValue) {
-      this.hour = null
     }
   }
 }

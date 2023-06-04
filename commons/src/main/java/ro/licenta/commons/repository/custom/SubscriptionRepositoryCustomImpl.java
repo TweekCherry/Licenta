@@ -52,9 +52,11 @@ public class SubscriptionRepositoryCustomImpl implements SubscriptionRepositoryC
 	
 	private Mono<Subscription> linkBenefits(Subscription subscription) {
 		ReactiveMap<ObjectId, Investigation> investigations = new ReactiveMap<>(key -> mongodb.findById(key, Investigation.class));
+		
 		return Flux.fromIterable(subscription.getBenefits()) // for each benefit
 			.flatMap(benefit -> investigations.find(benefit.getInvestigation())// find the investigation and cache it
-			.map(i -> benefit.setInvestigationData(i))) // set the investigation data on the benefit
+				.map(i -> benefit.setInvestigationData(i))// set the investigation data on the benefit
+			) 
 			.then(Mono.just(subscription)); // then return the initial subscription
 	}
 }

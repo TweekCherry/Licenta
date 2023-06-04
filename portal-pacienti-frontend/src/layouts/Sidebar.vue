@@ -29,8 +29,8 @@ export default {
       links: [
         { icon: 'mdi-home-account', title: 'Home', route: '/home' },
         { icon: 'mdi-calendar-month', title: 'Appointments', route: '/appointments' },
-        { icon: 'mdi-folder-eye-outline', title: 'Consultations', route: '/consultations' },
-        { icon: 'mdi-file-document-multiple', title: 'Analysis', route: '/analysis' },
+        { icon: 'mdi-clipboard-pulse-outline', title: 'Medical file', route: '/history' },
+        { icon: 'mdi-medical-bag', title: 'Investigations', route: '/investigations' },
         { icon: 'mdi-badge-account', title: 'Physicians', route: '/physicians' },
         { icon: 'mdi-heart-multiple-outline', title: 'Subscriptions', route: '/subscriptions' }
 

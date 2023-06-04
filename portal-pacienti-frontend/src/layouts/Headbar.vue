@@ -35,7 +35,6 @@ export default {
     return {
       links: [
         { icon: 'mdi-face-man-profile', title: 'Profile', route: '/profile' },
-        { icon: 'mdi-card-account-mail-outline', title: 'Contact', route: '/contact' },
         { icon: 'mdi-logout', title: 'Logout', route: '/logout' }
       ]
     }

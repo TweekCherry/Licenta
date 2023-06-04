@@ -22,9 +22,13 @@ import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 @Configuration
 @EnableTransactionManagement
@@ -40,6 +44,19 @@ public class MongodbConfig implements Jackson2ObjectMapperBuilderCustomizer  {
 	@Bean
 	public TransactionalOperator transactionalOperator(ReactiveTransactionManager trManager) {
 		return TransactionalOperator.create(trManager);
+	}
+	
+	@Bean
+	public ObjectMapper objectMapper() {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.findAndRegisterModules();
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+		SimpleModule simpleModule = new SimpleModule("ObjectIdSerializer");
+		simpleModule.addSerializer(ObjectId.class, new ObjectIdSerializer());
+		simpleModule.addDeserializer(ObjectId.class, new ObjectIdDeserializer());
+		mapper.registerModule(simpleModule);
+		return mapper;
 	}
 
 	@Override

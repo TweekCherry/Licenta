@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Getter;
@@ -33,11 +34,15 @@ public class Profile implements Serializable {
 	private String cnp;
 	private String gender;
 	private Long age;
-	private Address address;
+	@Transient
+	private Address address; // we don't need address anymore
 	private Subscription subscription;
 	private LocalDateTime subscriptionDate;
 	private LocalDateTime subscriptionExpirationDate;
 	
+	public String fullName() {
+		return firstName +  " " + lastName;
+	}
 
 	public boolean isSubscriptionValid() {
 		if (this.subscription != null && this.subscriptionExpirationDate.isBefore(LocalDateTime.now())) {

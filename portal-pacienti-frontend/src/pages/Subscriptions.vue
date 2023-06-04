@@ -12,7 +12,7 @@
       <div class="row">
         <div class="col-12 col-md-6" v-for="subscription in subscriptionsData" :key="subscription.id">
           <v-card outlined class="mx-auto">
-            <v-list-item two-line>
+            <v-list-item three-line>
               <v-list-item-avatar tile size="80" color="grey">
                 <img :src="subscription.image"/>
               </v-list-item-avatar>
@@ -20,7 +20,7 @@
                 <div class="d-flex justify-space-between">
                   <div>
                     <v-list-item-title class="text-h5 mb-1">{{ subscription.name }}</v-list-item-title>
-                    <div class="text-overline mb-4">
+                    <div class="text-overline">
                       <div>{{ subscription.price }} ron</div>
                       <div v-if="subscription.favorite">Expires at: {{formatExpirationDate(subscription)}}</div>
                     </div>
