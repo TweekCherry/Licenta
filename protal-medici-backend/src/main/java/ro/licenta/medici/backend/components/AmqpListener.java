@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.Getter;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 import reactor.core.publisher.Sinks.Many;
@@ -28,7 +29,7 @@ public class AmqpListener {
 	@Autowired
 	private ObjectMapper objectMapper;
 	private MessageConverter messageConverter;
-	
+	@Getter
 	private Many<Object> inbound = Sinks.many().multicast().directAllOrNothing();
 	private Many<Object> outbound = Sinks.many().multicast().directAllOrNothing();
 

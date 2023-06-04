@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import reactor.core.publisher.Mono;
 import ro.licenta.commons.amqp.AppointmentCancelled;
+import ro.licenta.commons.amqp.AppointmentStarted;
 import ro.licenta.commons.domain.ApiToken;
 import ro.licenta.commons.domain.Appointment;
 import ro.licenta.commons.domain.Appointment.AppointmentStatus;
@@ -62,6 +63,7 @@ public class AppointmentsController extends DefaultController {
 			.flatMap(apiToken -> appointmentRepository.aggregateById(id))
 			.map(appointment -> appointment.setStatus(AppointmentStatus.IN_PROGRESS))
 			.flatMap(appointmentRepository::save)
+			.doOnNext(a -> amqpListener.notifyPatients(new AppointmentStarted(a)))
 			.flatMap(a -> {
 				Consultation consultation = new Consultation();
 				consultation.setPrescription(new Prescription());
@@ -72,8 +74,8 @@ public class AppointmentsController extends DefaultController {
 	
 	private Mono<Boolean> hasNoActiveAppointment(ApiToken apiToken) {
 		return appointmentRepository.findByMedicAndStatus(apiToken.getUser(), AppointmentStatus.IN_PROGRESS) // find the active appointment
-			.map(a -> true) // true means we found one
-			.switchIfEmpty(Mono.just(false)) // false means we didn't found any
-			.filter(b -> b == false); // check if we didn't find any
+			.map(a -> false) // true means we found one
+			.switchIfEmpty(Mono.just(true)) // false means we didn't found any
+			;
 	}
 }

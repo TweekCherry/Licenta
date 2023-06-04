@@ -77,7 +77,7 @@
             </div>
           </v-card-text>
           <v-card-actions v-if="selectedEvent.data.status === 'SCHEDULED'">
-            <v-btn text color="blue" @click="startAppointment(selectedEvent.data)">Start</v-btn>
+            <v-btn text color="blue" @click="startAppointment(selectedEvent)">Start</v-btn>
             <v-btn text color="error" @click="deleteItem(selectedEvent.data.id)">Cancel appointment</v-btn>
           </v-card-actions>
           <div class="pl-4 pb-4" v-else>
@@ -174,23 +174,48 @@ export default {
       this.editItem(this.$route.params.appointmentData)
     }
     this.$getEventStream('AppointmentCreated').subscribe(event => {
-      const timestamp = DateTime.fromISO(event.payload.appointment.timestamp)
-      this.items.push({
-        start: timestamp.toFormat('yyyy-LL-dd HH:mm'),
-        end: timestamp.plus({ hours: 1 }).toFormat('yyyy-LL-dd HH:mm'),
-        color: this.getColor(event.payload.appointment),
-        data: event.payload.appointment
-      })
+      const timestamp = DateTime.fromISO(event.appointment.timestamp).plus({ minutes: DateTime.local().offset })
+      const currentItem = this.items.find(i => i.data.id === event.appointment.id) // was an edit
+      if (currentItem !== undefined) { // if the user edited the appointment, just update the data here
+        currentItem.start = timestamp.toFormat('yyyy-LL-dd HH:mm')
+        currentItem.end = timestamp.plus({ hours: 1 }).toFormat('yyyy-LL-dd HH:mm')
+        currentItem.color = this.getColor(event.appointment)
+        currentItem.data = event.appointment
+      } else { // if we have a new appointment, then just push it to the list
+        this.items.push({
+          start: timestamp.toFormat('yyyy-LL-dd HH:mm'),
+          end: timestamp.plus({ hours: 1 }).toFormat('yyyy-LL-dd HH:mm'),
+          color: this.getColor(event.appointment),
+          data: event.appointment
+        })
+      }
     })
     this.$getEventStream('AppointmentCancelled').subscribe(event => {
       if (this.onlyScheduled) {
-        this.items = this.items.filter(i => i.data.id !== event.payload.appointment.id)
-      } else {
-        const item = this.items.find(i => i.data.id === event.payload.appointment.id)
-        if (item !== undefined) {
-          item.color = this.getColor(event.payload.appointment)
-          item.status = event.payload.appointment.status
+        this.items = this.items.filter(i => i.data.id !== event.appointment.id)
+        if (this.selectedEvent !== null && this.selectedEvent.data.id === event.appointment.id) {
+          this.showOverviewDialog = false
         }
+        return
+      }
+      const item = this.items.find(i => i.data.id === event.appointment.id)
+      if (item !== undefined) {
+        item.color = this.getColor(event.appointment)
+        item.status = event.appointment.status
+      }
+    })
+    this.$getEventStream('AppointmentFinished').subscribe(event => {
+      if (this.onlyScheduled) {
+        this.items = this.items.filter(i => i.data.id !== event.appointment.id)
+        if (this.selectedEvent !== null && this.selectedEvent.data.id === event.appointment.id) {
+          this.showOverviewDialog = false
+        }
+        return
+      }
+      const item = this.items.find(i => i.data.id === event.appointment.id)
+      if (item !== undefined) {
+        item.color = this.getColor(event.appointment)
+        item.status = event.appointment.status
       }
     })
   },
@@ -200,7 +225,7 @@ export default {
       backend.$findAppointments(this.onlyScheduled).then(r => {
         this.items = []
         r.data.forEach(item => {
-          const timestamp = DateTime.fromISO(item.timestamp)
+          const timestamp = DateTime.fromISO(item.timestamp).plus({ minutes: DateTime.local().offset })
           this.items.push({
             start: timestamp.toFormat('yyyy-LL-dd HH:mm'),
             end: timestamp.plus({ hours: 1 }).toFormat('yyyy-LL-dd HH:mm'),
@@ -222,9 +247,13 @@ export default {
           .then(() => { this.loading = false })
       })
     },
-    startAppointment(appointment) {
+    startAppointment(event) {
       this.loading = true
+      this.showOverviewDialog = false
+      const appointment = event.data
       backend.$startAppointment(appointment.id).then(r => {
+        appointment.status = 'IN_PROGRESS'
+        event.color = this.getColor(appointment)
         this.$store.commit('activeConsultation', r.data)
         if (this.stopNavigationOnOpen) {
           return

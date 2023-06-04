@@ -32,37 +32,7 @@
                     Available investigations
                   </v-expansion-panel-header>
                   <v-expansion-panel-content>
-                    <v-simple-table>
-                      <template v-slot:default>
-                        <thead>
-                          <tr>
-                            <th class="text-left">
-                              Name
-                            </th>
-                            <th class="text-left">
-                              Discount
-                            </th>
-                            <th class="text-left">
-                              Price
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr v-for="benefit in subscription.benefits" :key="`${subscription.id}-${benefit.investigation}`">
-                            <td>
-                              <div class="body-1">{{benefit.investigationData.name}}</div>
-                              <div class="caption">{{benefit.investigationData.type}}</div>
-                              <div class="caption">{{benefit.investigationData.department}}</div>
-                            </td>
-                            <td>{{benefit.discount}}%</td>
-                            <td>
-                              <div class="text-decoration-line-through red--text">{{benefit.investigationData.price}} Ron</div>
-                              <div>{{computePrice(benefit.investigationData.price, benefit.discount)}} Ron</div>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </template>
-                    </v-simple-table>
+                    <SubscriptionBenefitsTable :subscription="subscription"/>
                   </v-expansion-panel-content>
                 </v-expansion-panel>
               </v-expansion-panels>
@@ -80,11 +50,12 @@
 </template>
 <script>
 import backend from '@/plugins/backend'
+import SubscriptionBenefitsTable from '@/pages/components/SubscriptionBenefitsTable.vue'
 import SubscriptionDetailsDialog from '@/pages/components/SubscriptionDetailsDialog.vue'
 export default {
   name: 'Subscriptions',
   components: {
-    SubscriptionDetailsDialog
+    SubscriptionDetailsDialog, SubscriptionBenefitsTable
   },
   data() {
     return {
@@ -124,12 +95,6 @@ export default {
         this.subscription = null
       }
       this.showSubscriptionDetailsDialog = !this.showSubscriptionDetailsDialog
-    },
-    computePrice(price, discount) {
-      if (discount > 0) {
-        return price - (price * discount / 100)
-      }
-      return price
     }
   }
 }

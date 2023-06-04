@@ -122,7 +122,7 @@ export default {
   computed: {
     title() {
       if (this.date !== null && this.date !== '') {
-        const date = DateTime.fromISO(this.date, { zone: 'utc' })
+        const date = DateTime.fromISO(this.date)
         return date.toFormat('LLLL yyyy')
       }
       return DateTime.now().toFormat('LLLL yyyy')
@@ -170,13 +170,37 @@ export default {
     }
     this.$getEventStream('AppointmentCancelled').subscribe(event => {
       if (this.onlyScheduled) {
-        this.items = this.items.filter(i => i.data.id !== event.payload.appointment.id)
-      } else {
-        const item = this.items.find(i => i.data.id === event.payload.appointment.id)
-        if (item !== undefined) {
-          item.color = this.getColor(event.payload.appointment)
-          item.status = event.payload.appointment.status
+        this.items = this.items.filter(i => i.data.id !== event.appointment.id)
+        if (this.selectedEvent !== null && this.selectedEvent.data.id === event.appointment.id) {
+          this.showOverviewDialog = false
         }
+        return
+      }
+      const item = this.items.find(i => i.data.id === event.appointment.id)
+      if (item !== undefined) {
+        item.color = this.getColor(event.appointment)
+        item.status = event.appointment.status
+      }
+    })
+    this.$getEventStream('AppointmentStarted').subscribe(event => {
+      const item = this.items.find(i => i.data.id === event.appointment.id)
+      if (item !== undefined) {
+        item.color = this.getColor(event.appointment)
+        item.data.status = event.appointment.status
+      }
+    })
+    this.$getEventStream('AppointmentFinished').subscribe(event => {
+      if (this.onlyScheduled) {
+        this.items = this.items.filter(i => i.data.id !== event.appointment.id)
+        if (this.selectedEvent !== null && this.selectedEvent.data.id === event.appointment.id) {
+          this.showOverviewDialog = false
+        }
+        return
+      }
+      const item = this.items.find(i => i.data.id === event.appointment.id)
+      if (item !== undefined) {
+        item.color = this.getColor(event.appointment)
+        item.data.status = event.appointment.status
       }
     })
   },
@@ -186,7 +210,7 @@ export default {
       backend.$findAppointments(this.onlyScheduled).then(r => {
         this.items = []
         r.data.forEach(item => {
-          const timestamp = DateTime.fromISO(item.timestamp, { zone: 'utc' })
+          const timestamp = DateTime.fromISO(item.timestamp).plus({ minutes: DateTime.local().offset })
           this.items.push({
             start: timestamp.toFormat('yyyy-LL-dd HH:mm'),
             end: timestamp.plus({ hours: 1 }).toFormat('yyyy-LL-dd HH:mm'),

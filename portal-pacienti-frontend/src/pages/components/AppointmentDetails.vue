@@ -225,7 +225,11 @@ export default {
         return
       }
       this.loading = true
-      this.appointmentData.timestamp = this.selectedTimestamp
+      this.appointmentData.timestamp = DateTime.fromISO(this.selectedTimestamp).toUTC().toISO({ includeOffset: false }) // save as utc
+      this.appointmentData.investigationData = null
+      this.appointmentData.medicData = null
+      this.appointmentData.clinicData = null
+      this.appointmentData.userData = null
       backend.$saveAppointment(this.appointmentData).then(r => {
         this.$emit('save')
         this.showSuccessNotification('Data saved successfully')
@@ -283,7 +287,7 @@ export default {
         backend.$findBookedAppointmentDates(this.appointmentData.clinic, this.appointmentData.medic, this.appointmentData.id).then(r => {
           const bookedTimestampsMap = new Map()
           r.data.forEach(d => {
-            const timestamp = DateTime.fromISO(d, { zone: 'utc' })
+            const timestamp = DateTime.fromISO(d)
             const date = timestamp.toISODate() // get the date part of this timestmap
             let times = bookedTimestampsMap.get(date) // get the set with the booked hours based on the date
             if (times === undefined) { // if we don't have any, then create a new set with booked hours
@@ -332,18 +336,18 @@ export default {
           this.loadData()
           this.checkForBookedDates()
         }
-        const timestamp = DateTime.fromISO(this.appointmentData.timestamp, { zone: 'utc' })
+        const timestamp = DateTime.fromISO(this.appointmentData.timestamp).plus({ minutes: DateTime.local().offset })
         this.minDate = timestamp.toISODate()
         this.date = timestamp.toISODate()
         this.hour = timestamp.toFormat('HH:mm')
         this.loading = true
         this.currentAppointmentTimestamps = new Map()
         this.appointments
-          .filter(a => a.status === 'SCHEDULED')
+          .filter(a => a.data.status === 'SCHEDULED')
           .filter(a => a.data.id !== this.appointmentData.id)
-          .map(a => DateTime.fromISO(a.data.timestamp, { zone: 'utc' }))
-          .forEach(d => {
-            const timestamp = DateTime.fromISO(d, { zone: 'utc' })
+          .map(a => DateTime.fromISO(a.data.timestamp).plus({ minutes: DateTime.local().offset }))
+          .forEach(timestamp => {
+            // const timestamp = DateTime.fromISO(d)
             const date = timestamp.toISODate() // get the date part of this timestmap
             let times = this.currentAppointmentTimestamps.get(date) // get the set with the booked hours based on the date
             if (times === undefined) { // if we don't have any, then create a new set with booked hours

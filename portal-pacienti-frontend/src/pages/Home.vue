@@ -41,44 +41,7 @@
                     Available investigations
                   </v-expansion-panel-header>
                   <v-expansion-panel-content>
-                    <v-simple-table>
-                      <template v-slot:default>
-                        <thead>
-                          <tr>
-                            <th class="text-left">
-                              Name
-                            </th>
-                            <th class="text-left">
-                              Discount
-                            </th>
-                            <th class="text-left">
-                              Price
-                            </th>
-                            <th class="text-left">
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr v-for="benefit in subscription.benefits" :key="`${subscription.id}-${benefit.investigation}`">
-                            <td>
-                              <div class="body-1">{{benefit.investigationData.name}}</div>
-                              <div class="caption">{{benefit.investigationData.type}}</div>
-                              <div class="caption">{{benefit.investigationData.department}}</div>
-                            </td>
-                            <td>{{benefit.discount}}%</td>
-                            <td>
-                              <div class="text-decoration-line-through red--text">{{benefit.investigationData.price}} Ron</div>
-                              <div>{{computeInvestigationPrice(benefit.investigationData)}} Ron</div>
-                            </td>
-                            <td>
-                              <v-btn icon @click="bookInvestigation(benefit.investigationData)">
-                                <v-icon>mdi-book-plus-outline</v-icon>
-                              </v-btn>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </template>
-                    </v-simple-table>
+                    <SubscriptionBenefitsTable :subscription="subscription" enableBooking @book="bookInvestigation"/>
                   </v-expansion-panel-content>
                 </v-expansion-panel>
               </v-expansion-panels>
@@ -93,10 +56,11 @@
 import backend from '@/plugins/backend'
 import { DateTime } from 'luxon'
 import Appointments from '@/pages/Appointments.vue'
+import SubscriptionBenefitsTable from '@/pages/components/SubscriptionBenefitsTable.vue'
 export default {
   name: 'Home',
   components: {
-    Appointments
+    Appointments, SubscriptionBenefitsTable
   },
   data() {
     return {

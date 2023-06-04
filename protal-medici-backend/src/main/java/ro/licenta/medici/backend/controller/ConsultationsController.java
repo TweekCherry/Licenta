@@ -49,6 +49,7 @@ public class ConsultationsController extends DefaultController {
 				.map(a -> a.setStatus(AppointmentStatus.FINISHED))
 				.flatMap(appointmentRepository::save)
 				.doOnNext(a -> amqpListener.notifyPatients(new AppointmentFinished(a)))
+				.doOnNext(a -> amqpListener.getInbound().tryEmitNext(new AppointmentFinished(a))) // send also a notification to self
 				.thenReturn(c);
 		});
 	}

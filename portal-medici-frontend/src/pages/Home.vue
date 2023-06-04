@@ -10,7 +10,7 @@
           <Appointments calendarType="day" onlyScheduled stopNavigationOnOpen/>
         </div>
         <div class="col-12 col-md-6">
-          <ConsultationDetails :consultation="consultation" :closeable="false" v-if="consultation !== null" />
+          <ConsultationDetails :consultation="consultation" :closeable="false" v-if="consultation !== null"/>
           <v-card v-else>
             <v-card-title class="justify-space-between">
               <div>

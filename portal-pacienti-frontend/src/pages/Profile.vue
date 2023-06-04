@@ -122,6 +122,15 @@ export default {
   },
   mounted() {
     this.profile = this.clone(this.$store.state.profile)
+    if (this.profile.address === null) {
+      this.profile.address = {
+        street: null,
+        city: null,
+        county: null,
+        number: null,
+        details: null
+      }
+    }
   },
   methods: {
     toggleProfileEdit() {

@@ -48,37 +48,7 @@
                 </v-btn>
               </div>
             </div>
-            <div class="row" v-for="(benefit, index) in subscriptionData.benefits" :key="`benefit-${index}`">
-              <div class="col-12 col-md-7 justify-center d-flex flex-column py-0">
-                <ValidationProvider rules="required" :name="`Investigation-${index}`" v-slot="{ errors, valid }">
-                  <v-select v-model="benefit.investigation" :items="availableInvestigations" label="Investigation" :error-messages="errors" :success="valid" item-text="name" item-value="id">
-                  </v-select>
-                </ValidationProvider>
-              </div>
-              <div class="col-12 col-md-5 justify-center d-flex flex-column py-0">
-                <ValidationProvider rules="required" :name="`Discount-${index}`" v-slot="{ errors, valid }">
-                  <v-text-field
-                    type="number" v-model="benefit.discount" label="Discount" required :error-messages="errors" :success="valid" focus
-                    min="0" max="100"
-                    name="discount">
-                      <v-btn slot="append" icon color="error" @click="removeBenefit(index)">
-                        <v-icon>mdi-trash-can-outline</v-icon>
-                      </v-btn>
-                    </v-text-field>
-                </ValidationProvider>
-              </div>
-              <div class="col-12">
-                <div class="d-flex justify-space-between">
-                  <div>Full price: </div>
-                  <div>{{price(benefit.investigation)}} Ron</div>
-                </div>
-                <div class="d-flex justify-space-between">
-                  <div>Discounted price: </div>
-                  <div>{{computePrice(benefit.investigation, benefit.discount)}} Ron</div>
-                </div>
-              </div>
-              <v-divider class="mx-4 pb-5"></v-divider>
-            </div>
+            <SubscriptionBenefitsTable :subscription="subscriptionData" editMode @edit="editBenefit" @delete="removeBenefit"/>
           </v-card-text>
           <v-divider class="mx-4"></v-divider>
           <v-card-actions>
@@ -90,16 +60,25 @@
         </v-card>
       </v-form>
     </ValidationObserver>
+    <BenefitDetailsDialog
+      :isVisible="showBenefitDetailsDialog"
+      :benefit="selectedBenefit"
+      :availableInvestigations="availableInvestigations"
+      @closed="showBenefitDetailsDialog = false"
+      @save="saveBenefit"
+    />
   </v-dialog>
 </template>
 <script>
 import backend from '@/plugins/backend'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import ImageInput from '@/pages/components/ImageInput.vue'
+import BenefitDetailsDialog from '@/pages/components/BenefitDetailsDialog.vue'
+import SubscriptionBenefitsTable from '@/pages/components/SubscriptionBenefitsTable.vue'
 export default {
   name: 'SubscriptionDetailsDialog',
   components: {
-    ValidationObserver, ValidationProvider, ImageInput
+    ValidationObserver, ValidationProvider, ImageInput, SubscriptionBenefitsTable, BenefitDetailsDialog
   },
   props: {
     isVisible: Boolean,
@@ -119,7 +98,10 @@ export default {
     return {
       fullscreen: false,
       loading: false,
+      showBenefitDetailsDialog: false,
       subscriptionData: this.newSubscription(),
+      selectedBenefit: null,
+      selectedBenefitIndex: -1,
       availableInvestigations: []
     }
   },
@@ -144,31 +126,25 @@ export default {
         .then(() => { this.loading = false })
     },
     addBenefit() {
-      this.subscriptionData.benefits.push({
-        investigation: null,
-        discount: 0.0
-      })
+      this.selectedBenefit = null
+      this.showBenefitDetailsDialog = true
+      this.selectedBenefitIndex = -1
     },
-    removeBenefit(index) {
+    editBenefit({ item, index }) {
+      this.selectedBenefit = item
+      this.showBenefitDetailsDialog = true
+      this.selectedBenefitIndex = index
+    },
+    removeBenefit({ item, index }) {
       this.subscriptionData.benefits.splice(index, 1)
     },
-    price(investigationId) {
-      const investigation = this.availableInvestigations.find(i => i.id === investigationId)
-      if (investigation !== undefined) {
-        return investigation.price
+    saveBenefit(benefit) {
+      if (this.selectedBenefitIndex >= 0) {
+        this.subscriptionData.benefits.splice(this.selectedBenefitIndex, 1)
       }
-      return 0
-    },
-    computePrice(investigationId, discount) {
-      const investigation = this.availableInvestigations.find(i => i.id === investigationId)
-      if (investigation !== undefined) {
-        let discountValue = 0
-        if (discount > 0) {
-          discountValue = investigation.price * discount / 100
-        }
-        return (investigation.price - discountValue).toFixed(2)
-      }
-      return 0
+      this.subscriptionData.benefits.push(benefit)
+      this.showBenefitDetailsDialog = false
+      this.selectedBenefitIndex = -1
     },
     newSubscription() {
       return {

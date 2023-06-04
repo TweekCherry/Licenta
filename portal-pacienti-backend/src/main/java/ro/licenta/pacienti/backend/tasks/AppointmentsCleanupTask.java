@@ -2,8 +2,6 @@ package ro.licenta.pacienti.backend.tasks;
 
 import java.time.LocalDateTime;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -23,8 +21,7 @@ public class AppointmentsCleanupTask {
 	/**
 	 * Update the appointments status every hour and 5 minutes
 	 * */
-//	@Scheduled(cron = "0 10 * * * *")
-	@PostConstruct
+	@Scheduled(cron = "0 10 * * * *")
 	private void cleanupAppointments() {
 		log.info("Appointment cleanup started");
 		appointmentRepository.findAll()
