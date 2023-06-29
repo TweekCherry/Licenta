@@ -40,7 +40,7 @@
                     Available investigations
                   </v-expansion-panel-header>
                   <v-expansion-panel-content>
-                    <SubscriptionBenefitsTable :subscription="subscription"/>
+                    <SubscriptionBenefitsTable :subscription="subscription" enableBooking @book="bookInvestigation"/>
                   </v-expansion-panel-content>
                 </v-expansion-panel>
               </v-expansion-panels>
@@ -126,6 +126,29 @@ export default {
         return price - (price * discount / 100)
       }
       return price
+    },
+    bookInvestigation(investigation) {
+      backend.$findClinicsByInvestigation(investigation.id).then(r => {
+        this.showSelectPromptDialog('Choose your clinic', 'Clinic', 'required', r.data, 'name', 'id').then(result => {
+          const appointmentData = {
+            id: null,
+            user: null,
+            clinic: result.id,
+            medic: null,
+            investigation: investigation.id,
+            timestamp: this.getNewAppointmentTimestamp(),
+            status: 'SCHEDULED',
+            investigationData: investigation,
+            clinicData: result
+          }
+          this.$router.push({
+            name: 'Appointments',
+            params: {
+              appointmentData: appointmentData
+            }
+          })
+        })
+      })
     }
   }
 }

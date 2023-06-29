@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import reactor.core.publisher.Mono;
 import ro.licenta.commons.domain.ApiToken;
+import ro.licenta.commons.domain.Roles;
 import ro.licenta.commons.repository.AccountRepository;
 import ro.licenta.commons.repository.ApiTokenRepository;
 import ro.licenta.commons.requests.BasicAuthenticationRequest;
@@ -40,6 +41,7 @@ public class SecurityController {
 	public Mono<ApiToken> login(@RequestBody BasicAuthenticationRequest loginRequest) {
 		return accountRepository.findByEmail(loginRequest.getEmail())
 			.filter(account -> passwordEncoder.matches(loginRequest.getPassword(), account.getPassword()))
+			.filter(account -> account.getRoles().contains(Roles.ROLE_ADMIN))
 			.map(account -> new ApiToken(account, loginRequest.getRememberMe()))
 			.flatMap(apiTokenRepository::save)
 			.switchIfEmpty(Mono.error(new BadCredentialsException("Invalid credentials")));

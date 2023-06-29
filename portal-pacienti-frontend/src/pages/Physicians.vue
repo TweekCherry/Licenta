@@ -19,7 +19,7 @@
               <v-list-item-content>
                 <div class="d-flex justify-space-between">
                   <div class="text-overline">{{medic.title}}</div>
-                  <v-btn icon @click="bookAppointment(item)" color="primary">
+                  <v-btn icon @click="bookAppointment(medic)" color="primary">
                     <v-icon>mdi-notebook-plus-outline</v-icon>
                   </v-btn>
                 </div>

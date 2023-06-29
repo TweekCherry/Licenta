@@ -18,7 +18,7 @@
             <div class="row">
               <div class="col-12 col-md-7 justify-center d-flex flex-column py-0">
                 <ValidationProvider rules="required" name="Investigation" v-slot="{ errors, valid }">
-                  <v-autocomplete v-model="benefitData.investigation" :items="availableInvestigations" label="Investigation" :error-messages="errors" :success="valid" item-text="name" item-value="id">
+                  <v-autocomplete v-model="benefitData.investigation" :items="availableInvestigations" label="Investigation" :error-messages="errors" :success="valid" item-text="name" item-value="id" @input="updateInvestigationData">
                   </v-autocomplete>
                 </ValidationProvider>
               </div>
@@ -81,13 +81,17 @@ export default {
     return {
       benefitData: {
         discount: 0,
-        investigation: null
+        investigation: null,
+        investigationData: null
       }
     }
   },
   methods: {
     saveBenefit() {
       this.$emit('save', this.benefitData)
+    },
+    updateInvestigationData(investigationId) {
+      this.benefitData.investigationData = this.availableInvestigations.find(i => i.id === investigationId)
     },
     price(investigationId) {
       const investigation = this.availableInvestigations.find(i => i.id === investigationId)
@@ -119,7 +123,8 @@ export default {
         } else {
           this.benefitData = {
             discount: 0,
-            investigation: null
+            investigation: null,
+            investigationData: null
           }
         }
       }

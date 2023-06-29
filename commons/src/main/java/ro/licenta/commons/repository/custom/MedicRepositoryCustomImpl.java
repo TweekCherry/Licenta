@@ -31,9 +31,9 @@ public class MedicRepositoryCustomImpl implements MedicRepositoryCustom {
 		AggregationOperation stage1 = TypedAggregation.match(Criteria.where("deleted").is(false)); // exclude deleted medics
 		AggregationOperation stage2 = TypedAggregation.lookup(Clinic.KEY_SPACE, "clinic", "_id", "clinicData"); // get the clinic data
 		AggregationOperation stage3 = TypedAggregation.lookup(Profile.KEY_SPACE, "_id", "_id", "profileData"); //get the profile data
-		AggregationOperation stage6 = TypedAggregation.lookup(Account.KEY_SPACE, "_id", "_id", "accountData"); // get the account data
-		AggregationOperation stage4 = TypedAggregation.addFields().addFieldWithValue("clinicData", ArrayOperators.First.first("$clinicData")).build(); // transform clinic data from array to object
-		AggregationOperation stage5 = TypedAggregation.addFields().addFieldWithValue("profileData", ArrayOperators.First.first("$profileData")).build(); // transform profile data from array to object
+		AggregationOperation stage4 = TypedAggregation.lookup(Account.KEY_SPACE, "_id", "_id", "accountData"); // get the account data
+		AggregationOperation stage5 = TypedAggregation.addFields().addFieldWithValue("clinicData", ArrayOperators.First.first("$clinicData")).build(); // transform clinic data from array to object
+		AggregationOperation stage6 = TypedAggregation.addFields().addFieldWithValue("profileData", ArrayOperators.First.first("$profileData")).build(); // transform profile data from array to object
 		AggregationOperation stage7 = TypedAggregation.addFields().addFieldWithValue("accountData", ArrayOperators.First.first("$accountData")).build(); // transform account data from array to object
 		
 		TypedAggregation<Medic> aggregation = TypedAggregation.newAggregation(Medic.class, 
@@ -48,9 +48,9 @@ public class MedicRepositoryCustomImpl implements MedicRepositoryCustom {
 		AggregationOperation stage1 = TypedAggregation.match(Criteria.where("deleted").is(false).and("clinic").is(clinic)); // exclude deleted medics and match clinic
 		AggregationOperation stage2 = TypedAggregation.lookup(Clinic.KEY_SPACE, "clinic", "_id", "clinicData"); // get the clinic data
 		AggregationOperation stage3 = TypedAggregation.lookup(Profile.KEY_SPACE, "_id", "_id", "profileData"); //get the profile data
-		AggregationOperation stage6 = TypedAggregation.lookup(Account.KEY_SPACE, "_id", "_id", "accountData"); // get the account data
-		AggregationOperation stage4 = TypedAggregation.addFields().addFieldWithValue("clinicData", ArrayOperators.First.first("$clinicData")).build(); // transform clinic data from array to object
-		AggregationOperation stage5 = TypedAggregation.addFields().addFieldWithValue("profileData", ArrayOperators.First.first("$profileData")).build(); // transform profile data from array to object
+		AggregationOperation stage4 = TypedAggregation.lookup(Account.KEY_SPACE, "_id", "_id", "accountData"); // get the account data
+		AggregationOperation stage5 = TypedAggregation.addFields().addFieldWithValue("clinicData", ArrayOperators.First.first("$clinicData")).build(); // transform clinic data from array to object
+		AggregationOperation stage6 = TypedAggregation.addFields().addFieldWithValue("profileData", ArrayOperators.First.first("$profileData")).build(); // transform profile data from array to object
 		AggregationOperation stage7 = TypedAggregation.addFields().addFieldWithValue("accountData", ArrayOperators.First.first("$accountData")).build(); // transform account data from array to object
 		
 		TypedAggregation<Medic> aggregation = TypedAggregation.newAggregation(Medic.class, 

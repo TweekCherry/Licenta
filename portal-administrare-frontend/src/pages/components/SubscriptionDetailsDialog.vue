@@ -63,7 +63,7 @@
     <BenefitDetailsDialog
       :isVisible="showBenefitDetailsDialog"
       :benefit="selectedBenefit"
-      :availableInvestigations="availableInvestigations"
+      :availableInvestigations="availableInvestigationsData"
       @closed="showBenefitDetailsDialog = false"
       @save="saveBenefit"
     />
@@ -92,6 +92,17 @@ export default {
       set: function(v) {
         this.$emit('closed')
       }
+    },
+    availableInvestigationsData() {
+      if (this.subscription !== null) {
+        return this.availableInvestigations.filter(i => { // filter linked investigations, so we don't add them twice
+          if (this.selectedBenefit !== null && this.selectedBenefit.investigation === i.id) { // if we;re editing the benefit, skip it
+            return true
+          }
+          return this.subscription.benefits.findIndex(b => b.investigation === i.id) < 0
+        })
+      }
+      return this.availableInvestigations
     }
   },
   data() {
@@ -135,7 +146,8 @@ export default {
       this.showBenefitDetailsDialog = true
       this.selectedBenefitIndex = index
     },
-    removeBenefit({ item, index }) {
+    removeBenefit({ item }) {
+      const index = this.subscriptionData.benefits.findIndex(b => b.investigation === item.investigation)
       this.subscriptionData.benefits.splice(index, 1)
     },
     saveBenefit(benefit) {

@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div class="col-12 col-md-4 col-lg-2" v-for="(stat, index) in stats" :key="index">
+    <div class="col-12 col-md-4 col-lg-4" v-for="(stat, index) in stats" :key="index">
       <v-card outlined :loading="loading">
         <v-card-title class="text-h5">{{stat.name}}</v-card-title>
         <v-card-subtitle class="pt-2">

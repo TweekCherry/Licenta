@@ -26,7 +26,7 @@
               <v-text-field :value="consultationData.appointment.userData.lastName" label="Last name" dense readonly disabled/>
             </div>
             <div class="col-12 col-md-6">
-              <v-text-field :value="consultationData.appointment.userData.age" label="Age" dense readonly disabled/>
+              <v-text-field :value="consultationData.appointment.userData.age" label="Birth year" dense readonly disabled/>
             </div>
             <div class="col-12 col-md-6">
               <v-text-field :value="consultationData.appointment.userData.gender" label="Gender" dense readonly disabled/>
